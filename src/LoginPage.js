@@ -7,10 +7,8 @@ const LoginPage = () => {
   const [error, setError] = useState('');
 
   const handleLogin = () => {
-    // Add your login logic here
-    // For simplicity, I'm just checking if both fields are filled
+
     if (username && password) {
-      // Successful login
       console.log('Login successful');
       setError('');
     } else {
@@ -19,7 +17,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="App">
+    <div className="LoginPage">
       <h1>Login Page</h1>
       <div>
         <label>Username:</label>
