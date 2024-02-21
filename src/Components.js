@@ -11,7 +11,6 @@ export class textBox extends React.Component{
 
     render(){
         const {label, type} = this.state;
-        text = '';
 
         return(
             <div>
