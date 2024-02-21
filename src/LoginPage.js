@@ -40,7 +40,7 @@ const LoginPage = () => {
         </button>
       </div>
       <button onClick={handleLogin}>Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: 'purple' }}>{error}</p>}
     </div>
   );
 };
