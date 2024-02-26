@@ -1,14 +1,2 @@
 node_modules
-build/static/js/main.8cf3f3b4.js
-build/static/js/592.70b70945.chunk.js.map
-build/static/js/592.70b70945.chunk.js
-build/static/js/main.8cf3f3b4.js.map
-build/static/css/main.32f349cd.css.map
-build/static/css/main.32f349cd.css
-build/robots.txt
-build/manifest.json
-build/logo512.png
-build/logo192.png
-build/index.html
-build/favicon.ico
-build/asset-manifest.json
+__pycache__
