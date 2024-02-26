@@ -1,7 +1,7 @@
 # ECE 461L: Team Project
 ## Team Members: Paul McCulley, Alfonso Herrera, Maximino Sanchez, David Cassity
 
-##Building
+## Building
 To build the server, run 'npm run build'. To run the server, run 'flask --app app run'
 
 ## Motivation
