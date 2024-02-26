@@ -1,20 +1,23 @@
 // App.js
 
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './HomePage';
-import LoginPage from './LoginPage';
-import ProjectManagementPage from './ProjectManagementPage';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Navbar } from "./components/Navbar";
+
+import { Home, About, Contact, Services, Login } from "./components/pages";
 
 const App = () => {
   return (
-    <Router>
+    <div className="App">
+      <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/project-management" element={<ProjectManagementPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/services" element={<Services />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
-    </Router>
+    </div>
   );
 };
 
