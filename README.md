@@ -2,7 +2,7 @@
 ## Team Members: Paul McCulley, Alfonso Herrera, Maximino Sanchez, David Cassity
 
 ##Building
-To build the server, run 'npm start build'. To run the server, run 'flask --app app run'
+To build the server, run 'npm run build'. To run the server, run 'flask --app app run'
 
 ## Motivation
 The well-known **Software-as-a-Service** (SaaS) model has now expanded to several online services,
