@@ -1,6 +1,9 @@
 # ECE 461L: Team Project
 ## Team Members: Paul McCulley, Alfonso Herrera, Maximino Sanchez, David Cassity
 
+##Building
+To build the server, run 'npm run build'. To run the server, run 'flask --app app run'
+
 ## Motivation
 The well-known **Software-as-a-Service** (SaaS) model has now expanded to several online services,
 including Infrastructure-as-a-Service (IaaS), Platform-as-a-Service (PaaS) and Hardware-as-a-
