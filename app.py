@@ -10,7 +10,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/', methods=["GET"])
-def index():
+def home():
     return send_from_directory(app.static_folder, "index.html")
 
 
@@ -21,6 +21,10 @@ def login():
 
 @app.route('/project-management')
 def projectManagement():
+    return send_from_directory(app.static_folder, "index.html")
+
+@app.route('/signup')
+def signup():
     return send_from_directory(app.static_folder, "index.html")
 
 

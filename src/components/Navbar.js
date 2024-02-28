@@ -2,14 +2,13 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 import { useState } from "react";
-import { IoHardwareChipSharp } from "react-icons/io5";
+//import { IoHardwareChipSharp } from "react-icons/io5";
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav>
       <Link to="/" className="title">
-        <IoHardwareChipSharp class="hardware-chip" />
         Hardware Harmony
       </Link>
 
