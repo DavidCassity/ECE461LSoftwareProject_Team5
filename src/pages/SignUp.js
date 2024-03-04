@@ -14,7 +14,7 @@ class SignUp extends Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleConfirmPasswordChange =
       this.handleConfirmPasswordChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShowPasswordChange = this.handleShowPasswordChange.bind(this);
   }
 
@@ -30,12 +30,13 @@ class SignUp extends Component {
     this.setState({ confirmPassword: event.target.value });
   };
 
-  handleClick = () => {
+  handleSubmit = (event) => {
     const { usernameID, password, confirmPassword } = this.state;
     let message = password == confirmPassword;
     message
       ? console.log("Passwords match")
       : console.log("Passwords do not match");
+    event.preventDefault();
   };
 
   handleShowPasswordChange = () => {
@@ -47,42 +48,44 @@ class SignUp extends Component {
   render() {
     const { usernameID, password, confirmPassword, showPassword } = this.state;
     return (
-      <div className="SignUpPage">
-        <h1>Sign Up Page</h1>
-        <div>
-          <label>UsernameID: </label>
-          <input
-            type="text"
-            value={usernameID}
-            onChange={this.handleUsernameIDChange}
-          />
+      <form onSubmit={this.handleSubmit}>
+        <div className="SignUpPage">
+          <h1>Sign Up Page</h1>
+          <div>
+            <label>UsernameID: </label>
+            <input
+              type="text"
+              value={usernameID}
+              onChange={this.handleUsernameIDChange}
+            />
+          </div>
+          <div>
+            <label>Password: </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={this.handlePasswordChange}
+            />
+          </div>
+          <div>
+            <label>Confirm Password: </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={confirmPassword}
+              onChange={this.handleConfirmPasswordChange}
+            />
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              checked={showPassword}
+              onChange={this.handleShowPasswordChange}
+            />
+            <label>Show Password</label>
+          </div>
+          <input type="submit" value="Sign up" />
         </div>
-        <div>
-          <label>Password: </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={this.handlePasswordChange}
-          />
-        </div>
-        <div>
-          <label>Confirm Password: </label>
-          <input
-            type={showPassword ? "text" : "password"}
-            value={confirmPassword}
-            onChange={this.handleConfirmPasswordChange}
-          />
-        </div>
-        <div>
-          <input
-            type="checkbox"
-            checked={showPassword}
-            onChange={this.handleShowPasswordChange}
-          />
-          <label>Show Password</label>
-        </div>
-        <button onClick={this.handleClick}>Sign Up</button>
-      </div>
+      </form>
     );
   }
 }
