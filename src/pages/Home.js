@@ -1,17 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import circuit from '../images/circuit.jpg'
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Home.css";
 
 const Home = () => {
   return (
     <div>
-      <img src={circuit} width={500} />
-      <Header />
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <h2>Welcome to Hardware Storage</h2>
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h2>Welcome! The next generation of hardware is here!</h2>
         <Link to="/login">
-          <button>Login</button>
+          <button class="login-btn">Login</button>
+        </Link>
+        <Link to="/signup">
+          <button class="login-btn">Sign-up</button>
         </Link>
       </div>
     </div>
