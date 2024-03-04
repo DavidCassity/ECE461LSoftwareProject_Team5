@@ -7,7 +7,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = (event) => {
 
     if (username && password) {
       console.log('Login successful');
@@ -15,6 +15,8 @@ const Login = () => {
     } else {
       setError('Please enter both username and password');
     }
+    event.preventDefault();
+
   };
 
   const toggleShowPassword = () => { 
@@ -22,6 +24,7 @@ const Login = () => {
 }; 
 
   return (
+    <form onSubmit={handleLogin}>
     <div className="LoginPage">
       <h1>Login Page</h1>
       <div>
@@ -35,13 +38,15 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={toggleShowPassword}>
-          {showPassword ? 'Hide' : 'Show'} Password
-        </button>
       </div>
-      <button onClick={handleLogin}>Login</button>
+      <div>
+        <input type="checkbox" checked={showPassword} onChange={toggleShowPassword} />
+        <label>Show password</label>
+      </div>
+      <input type="submit" value="Login"/>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
+    </form>
   );
 };
 
