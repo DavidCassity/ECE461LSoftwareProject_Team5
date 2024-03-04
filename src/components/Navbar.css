@@ -2,13 +2,6 @@
     background-color: #7cca8c;
 }
 
-.hardware-chip {
-    margin-left: 1rem;
-    height: 2rem;
-    width: 2rem;
-    color: #7cca8c
-}
-
 nav {
   display: flex;
   justify-content: space-between;

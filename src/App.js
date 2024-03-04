@@ -4,13 +4,12 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navbar } from "./components/Navbar";
 
-import Home from "./pages/Home"
-import About from "./pages/About"
-import Contact from "./pages/Contact"
-import Services from "./pages/Services"
-import Login from "./pages/Login"
-import SignUpPage from "./pages/SignUpPage"
-import ProjectManagementPage from "./pages/ProjectManagementPage"
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Projects from "./pages/Projects";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
 const App = () => {
   return (
@@ -20,10 +19,9 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/services" element={<Services />} />
+        <Route path="/projects" element={<Projects />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/project-management" element={<ProjectManagementPage />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </div>
   );

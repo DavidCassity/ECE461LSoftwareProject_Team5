@@ -1,11 +1,25 @@
-import React from 'react';
-import ProjectCard from '../components/ProjectCard';
+import React from "react";
+import ProjectCard from "../components/ProjectCard";
 
-const ProjectManagementPage = () => {
+const Projects = () => {
   // Placeholder data (replace with data fetched from the database)
   const projects = [
-    { id: 1, name: 'Project A', description: 'This is project A', owner: 'John Doe', members: ['John', 'Jane'], hardwareCheckedOut: 5 },
-    { id: 2, name: 'Project B', description: 'Project B details', owner: 'Alice Smith', members: ['Alice', 'Bob'], hardwareCheckedOut: 8 },
+    {
+      id: 1,
+      name: "Project A",
+      description: "This is project A",
+      owner: "John Doe",
+      members: ["John", "Jane"],
+      hardwareCheckedOut: 5,
+    },
+    {
+      id: 2,
+      name: "Project B",
+      description: "Project B details",
+      owner: "Alice Smith",
+      members: ["Alice", "Bob"],
+      hardwareCheckedOut: 8,
+    },
     // Add more projects as needed
   ];
 
@@ -22,10 +36,12 @@ const ProjectManagementPage = () => {
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Project Management Page</h2>
       <p>Global Hardware Capacity: {globalHardwareCapacity}</p>
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div
+        style={{ display: "flex", justifyContent: "center", flexWrap: "wrap" }}
+      >
         {projects.map((project) => (
           <ProjectCard
             key={project.id}
@@ -35,7 +51,9 @@ const ProjectManagementPage = () => {
             projectMembers={project.members}
             hardwareCheckedOut={project.hardwareCheckedOut}
             projectId={project.id}
-            onRequestHardware={(success) => handleRequestHardware(project.id, success)}
+            onRequestHardware={(success) =>
+              handleRequestHardware(project.id, success)
+            }
           />
         ))}
       </div>
@@ -43,4 +61,4 @@ const ProjectManagementPage = () => {
   );
 };
 
-export default ProjectManagementPage;
+export default Projects;

@@ -2,7 +2,6 @@ import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 import { useState } from "react";
-//import { IoHardwareChipSharp } from "react-icons/io5";
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -22,7 +21,7 @@ export const Navbar = () => {
           <NavLink to="/about">About</NavLink>
         </li>
         <li>
-          <NavLink to="/services">Services</NavLink>
+          <NavLink to="/projects">Project Management</NavLink>
         </li>
         <li>
           <NavLink to="/contact">Contact</NavLink>
