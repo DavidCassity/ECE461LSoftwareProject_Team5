@@ -3,6 +3,8 @@
 
 ## Building
 To build the server, run 'npm run build'. To run the server, run 'flask --app app run'
+To check out a pull request, run 'git fetch origin pull/ID/head:BRANCH_NAME'
+Note: do not be connected to guest or public wifi
 
 ## Motivation
 The well-known **Software-as-a-Service** (SaaS) model has now expanded to several online services,
