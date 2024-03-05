@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios'
 
 class SignUp extends Component {
   constructor(props) {
@@ -30,19 +31,34 @@ class SignUp extends Component {
     this.setState({ confirmPassword: event.target.value });
   };
 
-  handleSubmit = (event) => {
-    const { usernameID, password, confirmPassword } = this.state;
-    let message = password == confirmPassword;
-    message
-      ? console.log("Passwords match")
-      : console.log("Passwords do not match");
-    event.preventDefault();
-  };
-
   handleShowPasswordChange = () => {
     this.setState((prevState) => ({
       showPassword: !prevState.showPassword,
     }));
+  };
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const { usernameID, password, confirmPassword } = this.state;
+
+    if (password !== confirmPassword) {
+        console.log("Passwords do not match");
+        return;
+    }
+
+    try {
+        const response = await axios.post('http://127.0.0.1:81/signup', {
+            usernameID,
+            password,
+        });
+
+        console.log(response.data.message);
+        // Handle success (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+        console.error('Error signing up:', error.response.data.message);
+        // Handle error (e.g., show an error message to the user)
+    }
   };
 
   render() {

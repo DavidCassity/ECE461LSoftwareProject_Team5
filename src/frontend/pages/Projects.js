@@ -1,5 +1,5 @@
 import React from "react";
-import ProjectCard from "../components/ProjectCard";
+import ProjectCard from '../components/ProjectCard'
 
 const Projects = () => {
   // Placeholder data (replace with data fetched from the database)
