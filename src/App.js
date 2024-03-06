@@ -2,14 +2,14 @@
 
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navbar } from "./components/Navbar";
+import { Navbar } from "./frontend/components/Navbar";
 
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Projects from "./pages/Projects";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+import Home from "./frontend/pages/Home";
+import About from "./frontend/pages/About";
+import Contact from "./frontend/pages/Contact";
+import Projects from "./frontend/pages/Projects";
+import Login from "./frontend/pages/Login";
+import SignUp from "./frontend/pages/SignUp";
 
 const App = () => {
   return (
