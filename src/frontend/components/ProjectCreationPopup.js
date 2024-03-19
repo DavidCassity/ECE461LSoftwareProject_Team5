@@ -1,25 +1,31 @@
 import React, { Component } from "react";
 import axios from 'axios'
 
-class SignUp extends Component {
+class ProjectCreationPopup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usernameID: "",
-      password: "",
-      confirmPassword: "",
-      showPassword: false,
+        ownerID: "", //make this the userID of the person logged in
+        projectID: "",
+        password: "",
+        confirmPassword: "",
+        showPassword: false,
     };
 
-    this.handleUsernameIDChange = this.handleUsernameIDChange.bind(this);
+    this.handleOwnerID = this.handleOwnerID.bind(this);
+    this.handleProjectID = this.handleProjectID.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShowPasswordChange = this.handleShowPasswordChange.bind(this);
   }
 
-  handleUsernameIDChange = (event) => {
-    this.setState({ usernameID: event.target.value });
+  handleOwnerID = (event) => {
+    this.setState({ ownerID: event.target.value });
+  };
+
+  handleProjectID = (event) => {
+    this.setState({ projectID: event.target.value });
   };
 
   handlePasswordChange = (event) => {
@@ -39,7 +45,7 @@ class SignUp extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { usernameID, password, confirmPassword } = this.state;
+    const { ownerID, projectID, password, confirmPassword } = this.state;
 
     if (password !== confirmPassword) {
         console.log("Passwords do not match");
@@ -47,8 +53,9 @@ class SignUp extends Component {
     }
 
     try {
-        const response = await axios.post('http://127.0.0.1:81/signup', {
-            usernameID,
+        const response = await axios.post('http://127.0.0.1:81/projects', {
+            ownerID,
+            projectID,
             password,
         });
 
@@ -61,17 +68,25 @@ class SignUp extends Component {
   };
 
   render() {
-    const { usernameID, password, confirmPassword, showPassword } = this.state;
+    const { ownerID, projectID, password, confirmPassword, showPassword } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="SignUpPage">
-          <h1>Sign Up Page</h1>
+          <h2>Project Creation</h2>
           <div>
-            <label>UsernameID: </label>
+            <label>OwnerID: </label>
             <input
               type="text"
-              value={usernameID}
-              onChange={this.handleUsernameIDChange}
+              value={ownerID}
+              onChange={this.handleOwnerID}
+            />
+          </div>
+          <div>
+            <label>ProjectID: </label>
+            <input
+              type="text"
+              value={projectID}
+              onChange={this.handleProjectID}
             />
           </div>
           <div>
@@ -98,11 +113,11 @@ class SignUp extends Component {
             />
             <label>Show Password</label>
           </div>
-          <input type="submit" value="Sign up" />
+          <input type="submit" value="Create Project" />
         </div>
       </form>
     );
   }
-}
+}//after submitting make the popup disappear
 
-export default SignUp;
+export default ProjectCreationPopup;

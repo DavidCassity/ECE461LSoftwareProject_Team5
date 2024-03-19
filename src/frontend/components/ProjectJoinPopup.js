@@ -1,33 +1,28 @@
 import React, { Component } from "react";
 import axios from 'axios'
 
-class SignUp extends Component {
+class ProjectJoinPopup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      usernameID: "",
+      projectID: "",
       password: "",
-      confirmPassword: "",
       showPassword: false,
     };
 
-    this.handleUsernameIDChange = this.handleUsernameIDChange.bind(this);
+    this.handleProjectIDChange = this.handleProjectIDChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShowPasswordChange = this.handleShowPasswordChange.bind(this);
   }
 
-  handleUsernameIDChange = (event) => {
-    this.setState({ usernameID: event.target.value });
+  handleProjectIDChange = (event) => {
+    this.setState({ projectID: event.target.value });
   };
+
 
   handlePasswordChange = (event) => {
     this.setState({ password: event.target.value });
-  };
-
-  handleConfirmPasswordChange = (event) => {
-    this.setState({ confirmPassword: event.target.value });
   };
 
   handleShowPasswordChange = () => {
@@ -39,16 +34,11 @@ class SignUp extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
 
-    const { usernameID, password, confirmPassword } = this.state;
-
-    if (password !== confirmPassword) {
-        console.log("Passwords do not match");
-        return;
-    }
+    const { projectID, password } = this.state;
 
     try {
-        const response = await axios.post('http://127.0.0.1:81/signup', {
-            usernameID,
+        const response = await axios.post('http://127.0.0.1:81/projects', {
+            projectID,
             password,
         });
 
@@ -61,17 +51,17 @@ class SignUp extends Component {
   };
 
   render() {
-    const { usernameID, password, confirmPassword, showPassword } = this.state;
+    const { projectID, password, showPassword } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="SignUpPage">
-          <h1>Sign Up Page</h1>
+          <h2>Join Project</h2>
           <div>
-            <label>UsernameID: </label>
+            <label>ProjectID: </label>
             <input
               type="text"
-              value={usernameID}
-              onChange={this.handleUsernameIDChange}
+              value={projectID}
+              onChange={this.handleProjectIDChange}
             />
           </div>
           <div>
@@ -83,14 +73,6 @@ class SignUp extends Component {
             />
           </div>
           <div>
-            <label>Confirm Password: </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={this.handleConfirmPasswordChange}
-            />
-          </div>
-          <div>
             <input
               type="checkbox"
               checked={showPassword}
@@ -98,11 +80,11 @@ class SignUp extends Component {
             />
             <label>Show Password</label>
           </div>
-          <input type="submit" value="Sign up" />
+          <input type="submit" value="Join Project" />
         </div>
       </form>
     );
   }
 }
 
-export default SignUp;
+export default ProjectJoinPopup;
