@@ -34,14 +34,6 @@ const ProjectCard = ({ projectName }) => {
           count={hwSet2Count}
           label="HWSet2"
         />
-
-        <Button
-          variant="contained"
-          onClick={handleToggleJoin}
-          style={{ position: 'absolute', bottom: '10px', right: '10px', padding: '10px', fontSize: '1rem' }}
-        >
-          {isJoined ? 'Leave' : 'Join'}
-        </Button>
       </CardContent>
     </Card>
   );
