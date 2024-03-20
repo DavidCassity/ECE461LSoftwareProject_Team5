@@ -15,10 +15,6 @@ with open("login.txt", "r") as file:
     uri = file.read()
 
 # MongoDB connection
-uri = ""
-with open("login.txt", "r") as file:
-    uri = file.read()
-
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.Users
 users = db.users
