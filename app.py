@@ -9,8 +9,12 @@ app = Flask(__name__, static_folder="./build", static_url_path="/")
 CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
 
+#Get uri from login.txt
+uri = ""
+with open("login.txt", "r") as file:
+    uri = file.read()
+
 # MongoDB connection
-uri = "mongodb+srv://davidcassity:1@swproject.g87xiyc.mongodb.net/?retryWrites=true&w=majority&appName=SWProject"
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.Users
 users = db.users
