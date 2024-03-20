@@ -10,7 +10,10 @@ CORS(app)
 #app.config['CORS_HEADERS'] = 'Content-Type'
 
 # MongoDB connection
-uri = "mongodb+srv://davidcassity:1@swproject.g87xiyc.mongodb.net/?retryWrites=true&w=majority&appName=SWProject"
+uri = ""
+with open("login.txt", "r") as file:
+    uri = file.read()
+
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.Users
 users = db.users
