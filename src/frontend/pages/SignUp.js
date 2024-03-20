@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import axios from 'axios'
 
 class SignUp extends Component {
   constructor(props) {
@@ -9,11 +8,13 @@ class SignUp extends Component {
       password: "",
       confirmPassword: "",
       showPassword: false,
+      validUsernameID: false,
     };
 
     this.handleUsernameIDChange = this.handleUsernameIDChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this);
+    this.handleConfirmPasswordChange =
+    this.handleConfirmPasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShowPasswordChange = this.handleShowPasswordChange.bind(this);
   }
@@ -47,12 +48,18 @@ class SignUp extends Component {
     }
 
     try {
-        const response = await axios.post('http://127.0.0.1:81/signup', {
-            usernameID,
-            password,
-        });
+      const response = await fetch('/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Set Content-Type to JSON
+        },
+        body: JSON.stringify({ usernameID, password }),
+      });
 
-        console.log(response.data.message);
+      const data = await response.json();
+      this.setState({ validUsernameID: data.validUsernameID });
+
+      console.log(data.m);
         // Handle success (e.g., show a success message, redirect, etc.)
     } catch (error) {
         console.error('Error signing up:', error.response.data.message);
@@ -61,7 +68,7 @@ class SignUp extends Component {
   };
 
   render() {
-    const { usernameID, password, confirmPassword, showPassword } = this.state;
+    const { usernameID, password, confirmPassword, showPassword, validUsernameID } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="SignUpPage">
@@ -99,6 +106,7 @@ class SignUp extends Component {
             <label>Show Password</label>
           </div>
           <input type="submit" value="Sign up" />
+          {validUsernameID? <p>Sign Up Successful</p> : <p></p>}
         </div>
       </form>
     );

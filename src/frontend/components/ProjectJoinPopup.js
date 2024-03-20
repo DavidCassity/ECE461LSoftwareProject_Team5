@@ -1,90 +1,46 @@
-import React, { Component } from "react";
-import axios from 'axios'
+import React, { useState } from 'react';
+import { Button, TextField } from '@mui/material';
+import './Popup.css'; // Import the CSS file
 
-class ProjectJoinPopup extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      projectID: "",
-      password: "",
-      showPassword: false,
-    };
+const ProjectJoinPopup = ({ onClose }) => {
+  const [projectID, setProjectID] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-    this.handleProjectIDChange = this.handleProjectIDChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleShowPasswordChange = this.handleShowPasswordChange.bind(this);
-  }
-
-  handleProjectIDChange = (event) => {
-    this.setState({ projectID: event.target.value });
-  };
-
-
-  handlePasswordChange = (event) => {
-    this.setState({ password: event.target.value });
-  };
-
-  handleShowPasswordChange = () => {
-    this.setState((prevState) => ({
-      showPassword: !prevState.showPassword,
-    }));
-  };
-
-  handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-
-    const { projectID, password } = this.state;
-
-    try {
-        const response = await axios.post('http://127.0.0.1:81/projects', {
-            projectID,
-            password,
-        });
-
-        console.log(response.data.message);
-        // Handle success (e.g., show a success message, redirect, etc.)
-    } catch (error) {
-        console.error('Error signing up:', error.response.data.message);
-        // Handle error (e.g., show an error message to the user)
-    }
+    // Add your submission logic here
+    onClose(); // Close the popup after submission
   };
 
-  render() {
-    const { projectID, password, showPassword } = this.state;
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <div className="SignUpPage">
-          <h2>Join Project</h2>
-          <div>
-            <label>ProjectID: </label>
-            <input
-              type="text"
-              value={projectID}
-              onChange={this.handleProjectIDChange}
-            />
-          </div>
-          <div>
-            <label>Password: </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={this.handlePasswordChange}
-            />
-          </div>
-          <div>
-            <input
-              type="checkbox"
-              checked={showPassword}
-              onChange={this.handleShowPasswordChange}
-            />
-            <label>Show Password</label>
-          </div>
-          <input type="submit" value="Join Project" />
-        </div>
-      </form>
-    );
-  }
-}
+  return (
+    <div className="popup-overlay">
+      <div className="popup">
+        <h2>Join Project</h2>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="ProjectID"
+            value={projectID}
+            onChange={(e) => setProjectID(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            type={showPassword ? "text" : "password"}
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            fullWidth
+          />
+          <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>
+            Join Project
+          </Button>
+        </form>
+        <Button onClick={onClose} className="close-button">
+          X
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 export default ProjectJoinPopup;

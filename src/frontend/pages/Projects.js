@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import ProjectCard from '../components/ProjectCard';
+import ProjectCreationPopup from '../components/ProjectCreationPopup';
+import ProjectJoinPopup from '../components/ProjectJoinPopup';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
+  const [showCreationPopup, setShowCreationPopup] = useState(false);
+  const [showJoinPopup, setShowJoinPopup] = useState(false);
 
   const handleAddProject = () => {
-    setProjects([...projects, projects.length + 1]);
+    setShowCreationPopup(true);
   };
 
   const handleJoinProject = () => {
-    //console.log(`Joining Project ${projectNumber}`); make this call projectjoinpopup
+    setShowJoinPopup(true);
   };
 
   return (
@@ -24,6 +28,9 @@ const Projects = () => {
       <Button variant="contained" onClick={handleJoinProject} style={{ position: 'center', marginTop: '20px'}}>
         Join Project
       </Button>
+
+      {showCreationPopup && <ProjectCreationPopup onClose={() => setShowCreationPopup(false)} />}
+      {showJoinPopup && <ProjectJoinPopup onClose={() => setShowJoinPopup(false)} />}
     </div>
   );
 };
