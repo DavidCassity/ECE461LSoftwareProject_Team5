@@ -67,6 +67,7 @@ class SignUp extends Component {
     }
   };
 
+
   render() {
     const { usernameID, password, confirmPassword, showPassword, validUsernameID } = this.state;
     return (
