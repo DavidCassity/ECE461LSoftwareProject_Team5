@@ -2,7 +2,9 @@
 ## Team Members: Paul McCulley, Alfonso Herrera, Maximino Sanchez, David Cassity
 
 ## Building
-To build the server, run 'npm run build'. To run the server, run 'flask --app app run'
+To build the server, run `npm run build`. To run the server, run `flask --app app run`
+If that does not work, try `python -m app flask`
+To login to the server, create `login.txt` in the root directory with the uri
 To check out a pull request, run 'git fetch origin pull/ID/head:BRANCH_NAME'
 Note: do not be connected to guest or public wifi
 
