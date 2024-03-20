@@ -22,6 +22,10 @@ projects = client.Projects.projects
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
 
+@app.route("/")
+def index():
+    return send_from_directory(app.static_folder, "index.html")
+
 @app.route('/signup', methods=['POST'])
 @cross_origin()
 def signup():
@@ -47,9 +51,7 @@ def signup():
     else:
         return jsonify({'validUsernameID': False}), 401
 
-@app.route("/")
-def index():
-    return send_from_directory(app.static_folder, "index.html")
+
 
 @app.route('/login', methods=["POST"])
 def login():
@@ -108,41 +110,7 @@ def createProject():
         return jsonify({'validUsernameID': True}), 200
     else:
         return jsonify({'validUsernameID': False}), 401
-
-@app.route("/")
-def index():
-    return send_from_directory(app.static_folder, "index.html")
-
-@app.route('/login', methods=["POST"])
-def login():
-    data = request.json
-    usernameID = data.get('username')
-    password = data.get('password')
-
     
-    myquery={"usernameID":usernameID}
-    x=users.find_one(myquery)
-    print(x)
-
-    if x is not None:
-        match = bcrypt.check_password_hash(x['password'], password)
-        print(match)
-        if match:
-            return jsonify({'authenticated': True}), 200
-        else:
-            return jsonify({'authenticated': False}), 401
-    else:
-        return jsonify({'authenticated': False}), 401
-
-    print(usernameID, password)
-
-    # Retrieve user from the database
-    #user = db.users.find_one({'username': usernameID})
-
-@app.route('/project-management')
-@app.route('/signup')
-def serve_static():
-    return send_from_directory(app.static_folder, "index.html")
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False, port=os.environ.get("PORT", 80))
