@@ -7,7 +7,7 @@ const ProjectCreationPopup = ({ onClose }) => {
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -23,7 +23,7 @@ const ProjectCreationPopup = ({ onClose }) => {
         headers: {
           'Content-Type': 'application/json', // Set Content-Type to JSON
         },
-        body: JSON.stringify({ ownerID, projectID, password }),
+        body: JSON.stringify({action: 'create', ownerID, projectID, password }),
       });
 
       const data = await response.json();
