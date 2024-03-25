@@ -3,14 +3,37 @@ import { Button, TextField } from '@mui/material';
 import './Popup.css'; // Import the CSS file
 
 const ProjectJoinPopup = ({ onClose }) => {
+  const [usernameID, setUsernameID] = useState('');
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (event) => {
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Add your submission logic here
-    onClose(); // Close the popup after submission
+  
+    try {
+      const response = await fetch('/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({action: 'join', usernameID, projectID, password }),
+      });
+  
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Join project successful');
+        onClose(); // Close the popup after successful join
+      } else {
+        console.error('Join project failed:', data.error); // Log the specific error message
+      }
+    } catch (error) {
+      console.error('Error joining project:', error);
+    }
   };
 
   return (
@@ -18,6 +41,12 @@ const ProjectJoinPopup = ({ onClose }) => {
       <div className="popup">
         <h2>Join Project</h2>
         <form onSubmit={handleSubmit}>
+          <TextField
+            label="UsernameID"
+            value={usernameID}
+            onChange={(e) => setUsernameID(e.target.value)}
+            fullWidth
+          />
           <TextField
             label="ProjectID"
             value={projectID}
@@ -31,6 +60,9 @@ const ProjectJoinPopup = ({ onClose }) => {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
+          <Button onClick={toggleShowPassword}>
+            {showPassword ? "Hide Password" : "Show Password"}
+          </Button>
           <Button variant="contained" type="submit" style={{ marginTop: '10px' }}>
             Join Project
           </Button>

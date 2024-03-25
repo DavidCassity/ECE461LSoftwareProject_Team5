@@ -62,7 +62,7 @@ const Login = () => {
   return (
     <form onSubmit={handleLogin}>
     <div className="LoginPage">
-      <h1>Sign In</h1>
+      <h1>Login</h1>
       <div>
         <input id="textbox" placeholder="Username ID" type="text" value={username} onChange={usernameChange} />
       </div> 
