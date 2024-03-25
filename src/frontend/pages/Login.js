@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../App.css';
+import './Login.css';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-
   const [authenticated, setAuthenticated] = useState(false);
+  const [loginFailed, setLoginFailed] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
 
@@ -25,10 +28,27 @@ const Login = () => {
       const data = await response.json();
       setAuthenticated(data.authenticated);
       console.log(data.authenticated);
+      if(data.authenticated) {
+        navigate('/projects');
+      }
+      else {
+        setLoginFailed(true);
+      }
+
     } catch (error) {
       console.error('Error:', error);
     }
   };
+
+  const usernameChange = (e) => {
+    setUsername(e.target.value);
+    setLoginFailed(false);
+  }
+
+  const passwordChange = (e) => {
+    setPassword(e.target.value);
+    setLoginFailed(false);
+  }
 
   const toggleShowPassword = () => { 
     setShowPassword(!showPassword); 
@@ -42,27 +62,29 @@ const Login = () => {
   return (
     <form onSubmit={handleLogin}>
     <div className="LoginPage">
-      <h1>Login Page</h1>
+      <h1>Sign In</h1>
       <div>
-        <label>Username: </label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
-      </div>
+        <input id="textbox" placeholder="Username ID" type="text" value={username} onChange={usernameChange} />
+      </div> 
       <div>
-      <label>Password: </label>
-        <input
+          <input id="textbox" placeholder="Password"
           type={showPassword ? 'text' : 'password'}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          onChange={passwordChange}
+          />
       </div>
       <div>
         <input type="checkbox" checked={showPassword} onChange={toggleShowPassword} />
-        <label>Show password</label>
+        <label id="showpassword">Show password</label>
+        
       </div>
-      <div>
-      <input type="submit" value="Login"/>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {authenticated ? <p>Authenticated!</p> : <p>Not Authenticated</p>}
+      <div style={{ textAlign: 'center' }}>
+        <input type="submit" value="Login"/>
+        {loginFailed ? (
+            <p style={{ color: "red" }}>Sorry, we couldn't find an account with that username or password.</p>
+        ) : (
+            <p style={{ color: "transparent" }}>Sorry, we couldn't find an account with that username or password.</p>
+        )}
       </div>
     </div>
     
