@@ -1,14 +1,25 @@
-from flask import Flask, send_from_directory, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify, redirect, url_for
 from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from flask_bcrypt import Bcrypt
 from flask import jsonify
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 import os
+
+#User class that inherits UserMixin
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
 
 app = Flask(__name__, static_folder="./build", static_url_path="/")
 CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
+
+#Create key and initalize Flask-Login
+app.secret_key = "secretkey"
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 # Get uri from login.txt
 uri = ""
@@ -51,6 +62,21 @@ def signup():
     else:
         return jsonify({'validUsernameID': False}), 401
 
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    myquery={"usernameID":user_id}
+    user = users.find_one(myquery)
+    if user is not None:
+        print("User cookie")
+        return User(user)
+    return None
+
+@app.route('/login', methods=["GET"])
+def login_page():
+    return send_from_directory(app.static_folder, "index.html")
+
 @app.route('/login', methods=["POST"])
 def login():
     data = request.json
@@ -63,11 +89,27 @@ def login():
     if x is not None:
         match = bcrypt.check_password_hash(x['password'], password)
         if match:
+            current_user = User(usernameID)
+            login_user(current_user)
             return jsonify({'authenticated': True}), 200
         else:
             return jsonify({'authenticated': False}), 401
     else:
         return jsonify({'authenticated': False}), 401
+
+    print(usernameID, password)
+
+    # Retrieve user from the database
+    #user = db.users.find_one({'username': usernameID})
+
+@app.route('/projects', methods=['GET'])
+def view_projects():
+    if current_user.is_authenticated:
+        return jsonify({'authenticated': True}), 200
+    #otherwise, return to login page
+    return jsonify({'authenticated': False}), 401
+
+
 
 @app.route('/projects', methods=["POST"])
 @cross_origin()
