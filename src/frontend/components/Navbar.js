@@ -8,7 +8,7 @@ export const Navbar = () => {
   return (
     <nav>
       <Link to="/" className="title">
-        Hardware Harmony
+        Checkout!
       </Link>
 
       <div className="menu" onClick={() => setMenuOpen(!menuOpen)}>

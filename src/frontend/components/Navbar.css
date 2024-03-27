@@ -1,5 +1,5 @@
 .active {
-    background-color: #7cca8c;
+  background-color: #7cca8c;
 }
 
 nav {
@@ -16,8 +16,8 @@ nav .title {
   margin: 2rem;
   font-weight: bold;
   text-decoration: none;
-  color: white;
-  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: #7cca8c;
+  font-family: Georgia, "Times New Roman", Times, serif;
   margin-bottom: 2rem;
 }
 
@@ -40,56 +40,55 @@ nav ul li a {
 }
 
 nav ul li a:not(.active):hover {
-    background-color: #172554; 
-    /* dark grey: 172554 */
+  background-color: #7cca8c;
+  /* dark grey: 172554 */
 }
 
 nav .menu {
-    display: none;
-    position: absolute;
-    top: 0.75rem;
-    right: 0.5rem;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 2.25rem;
-    height: 2rem;
+  display: none;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 2.25rem;
+  height: 2rem;
 }
 
 nav .menu span {
-    height: 0.4rem;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 0.2rem;
+  height: 0.4rem;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 0.2rem;
 }
 
 @media (max-width: 480px) {
-    nav .menu {
-        display: flex;
-    }
+  nav .menu {
+    display: flex;
+  }
 
-    nav {
-        flex-direction: column;
-        align-items: start;
-    }
+  nav {
+    flex-direction: column;
+    align-items: start;
+  }
 
-    nav ul {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        margin-bottom: 0.25rem;
-    }
+  nav ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
 
-    nav ul.open {
-        display: flex;
-    }
+  nav ul.open {
+    display: flex;
+  }
 
-    nav ul li {
-        width: 100%;
-        text-align: center;
-    }
+  nav ul li {
+    width: 100%;
+    text-align: center;
+  }
 
-    nav ul li a {
-        margin: 0.2rem 0.5rem;
-    }
+  nav ul li a {
+    margin: 0.2rem 0.5rem;
+  }
 }
-
