@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Button } from '@mui/material';
 import ProjectCard from '../components/ProjectCard';
 import ProjectCreationPopup from '../components/ProjectCreationPopup';
@@ -8,6 +9,34 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [showCreationPopup, setShowCreationPopup] = useState(false);
   const [showJoinPopup, setShowJoinPopup] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  
+  // Call this function when first visiting the page
+  useEffect(() => {
+    const handleChecking = async() => {
+      try {
+        const response = await fetch('/projects', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json', // Set Content-Type to JSON
+          },
+        });
+        const data = await response.json();
+        console.log("API response: ", data);
+        setAuthenticated(data.authenticated);
+        console.log(data.authenticated);
+        if(!data.authenticated) {
+          navigate('/login');
+        }
+      }
+      catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    handleChecking();
+  }, []); // Pass an empty array to only run once
 
   const handleAddProject = () => {
     setShowCreationPopup(true);
