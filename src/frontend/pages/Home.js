@@ -1,7 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Home.css";
-import computer from "../assets/computer.gif";
 import circuitVideo from "../assets/videoBackground.mp4";
 
 const Home = () => {
@@ -48,12 +47,12 @@ const Home = () => {
             <span style={{ color: "#7cca8c" }}>&#10003;</span> Free to use
           </p>
         </div>
-        <div className="computer-img right">
-          <img src={computer} alt="computer.gif" />
+        <div className="circuit-video right">
+          <video src={circuitVideo} autoPlay loop muted />
         </div>
       </div>
-      <div className="circuit-video">
-        <video src={circuitVideo} autoPlay loop muted />
+      <div className="bottom">
+        <p></p>
       </div>
     </div>
   );
