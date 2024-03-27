@@ -22,7 +22,7 @@
   text-align: center;
 }
 
-.computer-img,
+.circuit-video,
 .checklist {
   width: 50%;
   height: 100%;
@@ -30,11 +30,12 @@
   padding-top: 50px;
 }
 
-img {
-  object-fit: contain;
+video {
+  object-fit: cover;
   border: solid #7cca8c 4px;
   border-radius: 20px;
   width: 100%;
+  height: 75%;
 }
 
 .item {
@@ -44,14 +45,14 @@ img {
   padding-left: 30px;
 }
 
-.circuit-video {
-  background-color: #353c4d;
-}
-
-video {
+.bottom {
+  float: left;
+  border-bottom: solid #7cca8c 15px;
   width: 100%;
-  height: 21.8vh;
-  object-fit: cover;
+  height: 15vh;
+  background-color: #353c4d;
+  border-bottom-left-radius: 100%;
+  border-bottom-right-radius: 100%;
 }
 
 .login-btn {
