@@ -101,13 +101,18 @@ def login():
 
     # Retrieve user from the database
     #user = db.users.find_one({'username': usernameID})
-
 @app.route('/projects', methods=['GET'])
 def view_projects():
     user = str(current_user.id)
     print(user)
     if current_user.is_authenticated:
-        return jsonify({'authenticated': True, 'userID': user}), 200
+        user = users.find_one({'usernameID': current_user.id})
+        project_names = user['joined_projects']
+        projects = []
+        for project in project_names:
+            projects.append(projects.find_one({'projectID': project}))
+
+        return jsonify({'authenticated': True, 'userID': user, 'projects': projects}), 200
     #otherwise, return to login page
     return jsonify({'authenticated': False}), 401
 
