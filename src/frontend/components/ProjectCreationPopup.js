@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import './Popup.css'; // Import the CSS file
 
-const ProjectCreationPopup = ({ onClose }) => {
+const ProjectCreationPopup = ({ onClose, usernameID }) => {
   const [ownerID, setOwnerID] = useState('');
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +23,9 @@ const ProjectCreationPopup = ({ onClose }) => {
         headers: {
           'Content-Type': 'application/json', // Set Content-Type to JSON
         },
-        body: JSON.stringify({action: 'create', ownerID, projectID, password }),
+        
+        
+        body: JSON.stringify({action: 'create', ownerID, projectID, password}),
       });
 
       const data = await response.json();
