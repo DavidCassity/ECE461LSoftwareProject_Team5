@@ -10,6 +10,7 @@ const Projects = () => {
   const [showCreationPopup, setShowCreationPopup] = useState(false);
   const [showJoinPopup, setShowJoinPopup] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const [userID, setUserID] = useState(''); // Add this line
   const navigate = useNavigate();
 
   
@@ -26,6 +27,7 @@ const Projects = () => {
         const data = await response.json();
         console.log("API response: ", data);
         setAuthenticated(data.authenticated);
+        setUserID(data.userID);
         console.log(data.authenticated);
         if(!data.authenticated) {
           navigate('/login');
@@ -58,9 +60,9 @@ const Projects = () => {
         Join Project
       </Button>
 
-      {showCreationPopup && <ProjectCreationPopup onClose={() => setShowCreationPopup(false)} />}
+      {showCreationPopup && <ProjectCreationPopup usernameID={userID} onClose={() => setShowCreationPopup(false)} />}
       {showJoinPopup && <ProjectJoinPopup onClose={() => setShowJoinPopup(false)} />}
-    </div>
+    </div> 
   );
 };
 

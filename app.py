@@ -104,8 +104,10 @@ def login():
 
 @app.route('/projects', methods=['GET'])
 def view_projects():
+    user = str(current_user.id)
+    print(user)
     if current_user.is_authenticated:
-        return jsonify({'authenticated': True}), 200
+        return jsonify({'authenticated': True, 'userID': user}), 200
     #otherwise, return to login page
     return jsonify({'authenticated': False}), 401
 
@@ -138,7 +140,12 @@ def createProject(data):
         'projectID': projectID,
         'password': hashed_password,
         'ownerID' : ownerID,
-        'members': []
+        'members': [],
+        'checkOut': {
+            ownerID: []
+        },
+        'availability': [],
+        'capacity': []
     }
 
     myquery = {"projectID": projectID}
@@ -183,7 +190,10 @@ def joinProject(data):
             # Update project's "members" list with usernameID
             projects.update_one(
                 {"projectID": projectID},
-                {"$push": {"members": usernameID}}
+                {
+                    "$push": {"members": usernameID},
+                    "$set": {f"checkOut.{usernameID}": []}
+                }
             )
 
             # Update user's "joined_projects" list with projectID
@@ -197,6 +207,52 @@ def joinProject(data):
             return jsonify({'authenticated': False, 'error': 'Incorrect password'}), 401
     else:
         return jsonify({'authenticated': False, 'error': 'Project not found'}), 404
+        
+@app.route('/projects/<int:hwset>/<int:amount>/<boolean: checkout', methods=['POST'])
+def updateProject(hwset, amount, checkout):
+    if current_user.is_authenticated:
+        data = request.json
+        projectID = data.get('projectID')
+        usernameID = current_user.id
+
+        myquery = {"projectID": projectID}
+        project = projects.find_one(myquery)
+
+        if project is not None:
+            message = ""
+            error = False
+            if checkout:
+                error, message = hardware_checkout(project, hwset, amount)
+                
+            else:
+                error, message = hardware_checkin(project, hwset, amount)
+
+            return jsonify({'authenticated': True, 'error': error, 'message': message}), 200
+        
+        else:
+            return jsonify({'authenticated': False}), 404
+        
+
+def hardware_checkout(project, hwset, amount):
+    if project['availability'][hwset] >= amount:
+        project['availability'][hwset] -= amount
+        project['checkOut'][current_user.id][hwset] += amount
+        return False, 'Hardware successfully checked out'
+    
+    else:
+        return True, 'Attempted to check out more hardware than available'
+    
+    
+def hardware_checkin(project, hwset, amount):
+    if project['checkOut'][current_user.id][hwset] >= amount:
+        project['availability'][hwset] += amount
+        project['checkOut'][current_user.id][hwset] -= amount   
+        return False, 'Hardware successfully checked in'
+    
+    else:
+        return True, 'Attempted to check in more hardware than checked out'
+    
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False, port=os.environ.get("PORT", 80))
