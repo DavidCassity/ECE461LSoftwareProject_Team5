@@ -113,12 +113,15 @@ def view_projects():
     print(user)
     if current_user.is_authenticated:
         user = users.find_one({'usernameID': current_user.id})
-        project_names = user['joined_projects']
-        projects = []
-        for project in project_names:
-            projects.append(projects.find_one({'projectID': project}))
+        if user:
+            project_names = user.get('joined_projects', [])
+            projects = []
+            for project in project_names:
+                projects.append(projects.find_one({'projectID': project}))
 
-        return jsonify({'authenticated': True, 'userID': user, 'projects': projects}), 200
+            return jsonify({'authenticated': True, 'userID': user, 'projects': projects}), 200
+        else:
+            return jsonify({'authenticated': True, 'userID': user, 'projects': [], 'error': 'User has not joined any projects yet'}), 200
     #otherwise, return to login page
     return jsonify({'authenticated': False}), 401
 
@@ -141,12 +144,21 @@ def projectHandler():
 def createProject(data):
     ownerID = current_user.id.get('usernameID')
     projectID = data.get('projectID')
+    description = data.get('description')
     password = data.get('password')
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
+    myquery = {"projectID": projectID}
+    existing_project = projects.find_one(myquery)
+
+    if existing_project is not None:
+        # If projectID already exists, return an error message
+        return jsonify({'validProjectID': False, 'error': 'ProjectID already exists'}), 400
+
     new_project = {
         'projectID': projectID,
+        'description': description,
         'password': hashed_password,
         'ownerID' : ownerID,
         'members': [],
@@ -157,32 +169,26 @@ def createProject(data):
         'capacity': []
     }
 
-    myquery = {"projectID": projectID}
-    x = projects.find_one(myquery)
+    # Insert the new project
+    projects.insert_one(new_project)
+    projects.update_one(
+        {"projectID": projectID},
+        {"$push": {"members": ownerID}}
+    )
 
-    if x is None:
-        # Insert the new project
-        projects.insert_one(new_project)
-        projects.update_one(
-            {"projectID": projectID},
-            {"$push": {"members": ownerID}}
-        )
+    # Update the user's owned_projects
+    users.update_one(
+        {"usernameID": ownerID},
+        {"$push": {"owned_projects": projectID}}
+    )
 
-        # Update the user's owned_projects
-        users.update_one(
-            {"usernameID": ownerID},
-            {"$push": {"owned_projects": projectID}}
-        )
+    # Update the user's joined_projects
+    users.update_one(
+        {"usernameID": ownerID},
+        {"$push": {"joined_projects": projectID}}
+    )
 
-        # Update the user's joined_projects
-        users.update_one(
-            {"usernameID": ownerID},
-            {"$push": {"joined_projects": projectID}}
-        )
-
-        return jsonify({'validProjectID': True}), 200
-    else:
-        return jsonify({'validProjectID': False}), 401
+    return jsonify({'validProjectID': True}), 200
     
 def joinProject(data):
     usernameID = current_user.id.get('usernameID')
