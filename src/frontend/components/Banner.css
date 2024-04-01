@@ -1,0 +1,57 @@
+.global-capacity-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-bottom: 2px solid #ccc;
+}
+
+.banner-title {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.meter-container {
+  width: 80%;
+  height: 20px;
+  background-color: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.meter {
+  position: relative;
+  height: 100%;
+  background-color: green;
+  transition: width 0.5s ease;
+}
+
+.checked-out-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+}
+
+.usage-percentage {
+  color: green;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.add-project-button {
+  background-color: blue;
+  color: white;
+}
+
+.join-project-button {
+  background-color: green;
+  color: white;
+}

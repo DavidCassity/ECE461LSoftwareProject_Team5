@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Button } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import ProjectCard from '../components/ProjectCard';
 import ProjectCreationPopup from '../components/ProjectCreationPopup';
 import ProjectJoinPopup from '../components/ProjectJoinPopup';
+import '../components/Banner.css';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -50,16 +51,26 @@ const Projects = () => {
 
   return (
     <div>
-      {projects.map((projectNumber) => (
-        <ProjectCard key={projectNumber} projectName={`Project ${projectNumber}`} />
-      ))}
-      <Button variant="contained" onClick={handleAddProject} style={{ position: 'center', marginTop: '20px' }}>
-        Add Project
-      </Button>
-      <Button variant="contained" onClick={handleJoinProject} style={{ position: 'center', marginTop: '20px'}}>
-        Join Project
-      </Button>
-
+      <div className="global-capacity-banner">
+        <h2 className="banner-title">Global Capacity</h2>
+        <div className="meter-container">
+          <div className="meter" style={{ width: `${(0 / 1) * 100}%`, backgroundColor: 'green' }}>
+            <p className="checked-out-text">{0}/{1}</p>
+          </div>
+        </div>
+      </div>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Button fullWidth variant="contained" onClick={handleAddProject} className="add-project-button">
+            Add Project
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Button fullWidth variant="contained" onClick={handleJoinProject} className="join-project-button">
+            Join Project
+          </Button>
+        </Grid>
+      </Grid>
       {showCreationPopup && <ProjectCreationPopup usernameID={userID} onClose={() => setShowCreationPopup(false)} />}
       {showJoinPopup && <ProjectJoinPopup onClose={() => setShowJoinPopup(false)} />}
     </div> 
