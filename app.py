@@ -18,6 +18,7 @@ CORS(app)
 
 #Create key and initalize Flask-Login
 app.secret_key = "secretkey"
+app.config['PERMANENT_SESSION_LIFETIME'] = 600 # 3600 for 1 hour, 1800 for 30 minutes, 600 for 10 minutes
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -101,6 +102,11 @@ def login():
 
     # Retrieve user from the database
     #user = db.users.find_one({'username': usernameID})
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+
 @app.route('/projects', methods=['GET'])
 def view_projects():
     user = str(current_user.id)
@@ -115,8 +121,6 @@ def view_projects():
         return jsonify({'authenticated': True, 'userID': user, 'projects': projects}), 200
     #otherwise, return to login page
     return jsonify({'authenticated': False}), 401
-
-
 
 @app.route('/projects', methods=["POST"])
 @cross_origin()
