@@ -139,7 +139,7 @@ def projectHandler():
         return jsonify({'error': str(e)}), 400
 
 def createProject(data):
-    ownerID = data.get('ownerID')
+    ownerID = current_user.id.get('usernameID')
     projectID = data.get('projectID')
     password = data.get('password')
 
@@ -185,7 +185,7 @@ def createProject(data):
         return jsonify({'validProjectID': False}), 401
     
 def joinProject(data):
-    usernameID = data.get('usernameID')
+    usernameID = current_user.id.get('usernameID')
     projectID = data.get('projectID')
     password = data.get('password')
 
@@ -217,8 +217,9 @@ def joinProject(data):
     else:
         return jsonify({'authenticated': False, 'error': 'Project not found'}), 404
         
-@app.route('/projects/<int:hwset>/<int:amount>/<boolean: checkout', methods=['POST'])
-def updateProject(hwset, amount, checkout):
+@app.route('/projects/<int:hwset>/<int:amount>/<string:checkoutStr>', methods=['POST'])
+def updateProject(hwset, amount, checkoutStr):
+    checkout = checkoutStr.lower() == 'true'
     if current_user.is_authenticated:
         data = request.json
         projectID = data.get('projectID')
