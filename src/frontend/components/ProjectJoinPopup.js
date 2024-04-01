@@ -3,7 +3,6 @@ import { Button, TextField } from '@mui/material';
 import './Popup.css'; // Import the CSS file
 
 const ProjectJoinPopup = ({ onClose }) => {
-  const [usernameID, setUsernameID] = useState('');
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +20,7 @@ const ProjectJoinPopup = ({ onClose }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({action: 'join', usernameID, projectID, password }),
+        body: JSON.stringify({action: 'join', projectID, password }),
       });
   
       const data = await response.json();
@@ -41,12 +40,6 @@ const ProjectJoinPopup = ({ onClose }) => {
       <div className="popup">
         <h2>Join Project</h2>
         <form onSubmit={handleSubmit}>
-          <TextField
-            label="UsernameID"
-            value={usernameID}
-            onChange={(e) => setUsernameID(e.target.value)}
-            fullWidth
-          />
           <TextField
             label="ProjectID"
             value={projectID}

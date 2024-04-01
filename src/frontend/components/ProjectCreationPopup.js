@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
 import './Popup.css'; // Import the CSS file
 
-const ProjectCreationPopup = ({ onClose, usernameID }) => {
-  const [ownerID, setOwnerID] = useState('');
+const ProjectCreationPopup = ({ onClose }) => {
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -25,11 +24,17 @@ const ProjectCreationPopup = ({ onClose, usernameID }) => {
         },
         
         
-        body: JSON.stringify({action: 'create', ownerID, projectID, password}),
+        body: JSON.stringify({action: 'create', projectID, password}),
       });
 
       const data = await response.json();
-      console.log(data);
+      if (response.ok) {
+        console.log('Add project successful');
+        onClose(); // Close the popup after successful add
+      }
+      else {
+        console.error('Add project failed:', data.error); // Log the specific error message
+      }
 
       // Assuming 'validProjectID' is returned from the server
       // Handle success (e.g., show a success message, redirect, etc.)
@@ -44,12 +49,6 @@ const ProjectCreationPopup = ({ onClose, usernameID }) => {
       <div className="popup">
         <h2>Project Creation</h2>
         <form onSubmit={handleSubmit}>
-          <TextField
-            label="OwnerID"
-            value={ownerID}
-            onChange={(e) => setOwnerID(e.target.value)}
-            fullWidth
-          />
           <TextField
             label="ProjectID"
             value={projectID}
