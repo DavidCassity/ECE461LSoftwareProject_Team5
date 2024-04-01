@@ -128,7 +128,7 @@ def projectHandler():
         return jsonify({'error': str(e)}), 400
 
 def createProject(data):
-    ownerID = data.get('ownerID')
+    ownerID = current_user.id.get('usernameID')
     projectID = data.get('projectID')
     password = data.get('password')
 
@@ -169,7 +169,7 @@ def createProject(data):
         return jsonify({'validProjectID': False}), 401
     
 def joinProject(data):
-    usernameID = data.get('usernameID')
+    usernameID = current_user.id.get('usernameID')
     projectID = data.get('projectID')
     password = data.get('password')
 
