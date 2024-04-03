@@ -6,6 +6,7 @@ const ProjectJoinPopup = ({ onClose }) => {
   const [projectID, setProjectID] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const toggleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -20,7 +21,7 @@ const ProjectJoinPopup = ({ onClose }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({action: 'join', projectID, password }),
+        body: JSON.stringify({ action: 'join', projectID, password }),
       });
   
       const data = await response.json();
@@ -28,10 +29,12 @@ const ProjectJoinPopup = ({ onClose }) => {
         console.log('Join project successful');
         onClose(); // Close the popup after successful join
       } else {
-        console.error('Join project failed:', data.error); // Log the specific error message
+        console.error('Join project failed:', data.error);
+        setErrorMessage(data.error); // Set the error message received from the server
       }
     } catch (error) {
       console.error('Error joining project:', error);
+      setErrorMessage('Error joining project'); // Set a generic error message
     }
   };
 
@@ -40,6 +43,7 @@ const ProjectJoinPopup = ({ onClose }) => {
       <div className="popup">
         <h2>Join Project</h2>
         <form onSubmit={handleSubmit}>
+          {errorMessage && <p style={{ color: 'red', marginBottom: '10px' }}>{errorMessage}</p>}
           <TextField
             label="ProjectID"
             value={projectID}
