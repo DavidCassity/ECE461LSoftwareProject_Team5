@@ -71,7 +71,7 @@ def load_user(user_id):
     user = users.find_one(myquery)
     if user is not None:
         print("User cookie")
-        return User(user)
+        return User(user['usernameID'])
     return None
 
 @app.route('/login', methods=["GET"])
@@ -94,8 +94,10 @@ def login():
             login_user(current_user)
             return jsonify({'authenticated': True}), 200
         else:
+            print("Incorrect password")
             return jsonify({'authenticated': False}), 401
     else:
+        print("User not found")
         return jsonify({'authenticated': False}), 401
 
     print(usernameID, password)
@@ -110,15 +112,21 @@ def logout():
 @app.route('/projects', methods=['GET'])
 def view_projects():
     user = str(current_user.id)
-    print(user)
+    print('Current User: ', user)
     if current_user.is_authenticated:
-        user = users.find_one({'usernameID': current_user.id})
-        project_names = user['joined_projects']
-        projects = []
-        for project in project_names:
-            projects.append(projects.find_one({'projectID': project}))
+        user_cur = users.find_one({'usernameID': user})
+        print(user_cur)
 
-        return jsonify({'authenticated': True, 'userID': user, 'projects': projects}), 200
+        project_names = user_cur['joined_projects']
+        projectList = []
+        for project in project_names:
+            project_data = projects.find_one({'projectID': project})
+            if project_data:
+                # Convert ObjectId to string for serialization
+                project_data['_id'] = str(project_data['_id'])
+                projectList.append(project_data)
+
+        return jsonify({'authenticated': True, 'userID': user, 'projects': projectList}), 200
     #otherwise, return to login page
     return jsonify({'authenticated': False}), 401
 
@@ -126,20 +134,46 @@ def view_projects():
 @cross_origin()
 def projectHandler():
     try:
+        print("Raw request body:", request.data)  # Print raw request body
+        data = request.json  # Parse JSON data from the request body
+        print("Parsed JSON data:", data)  # Print parsed JSON data
+        action = data.get('action')
+        
+        if action == 'join':
+            return joinProject(data)
+        elif action == 'create':
+            print("Creating project")
+            return createProject(data)
+        else:
+            print("Invalid action specified")
+            return jsonify({'error': 'Invalid action specified'}), 400
+    except Exception as e:
+        print("Exception:", e)
+        return jsonify({'error': str(e)}), 400
+    
+
+"""
+@app.route('/projects', methods=["POST"])
+@cross_origin()
+def projectHandler():
+    try:
         data = request.json  # Parse JSON data from the request body
         action = data.get('action')
-
+        
         if action == 'join':
             return joinProject(data)
         elif action == 'create':
             return createProject(data)
         else:
+            print("Invalid action specified")
             return jsonify({'error': 'Invalid action specified'}), 400
     except Exception as e:
+        print("Exception: ", e)
         return jsonify({'error': str(e)}), 400
+"""
 
 def createProject(data):
-    ownerID = current_user.id.get('usernameID')
+    ownerID = current_user.id
     projectID = data.get('projectID')
     password = data.get('password')
 
@@ -149,12 +183,12 @@ def createProject(data):
         'projectID': projectID,
         'password': hashed_password,
         'ownerID' : ownerID,
-        'members': [],
+        'members': [ownerID],
         'checkOut': {
-            ownerID: []
+            ownerID: [0, 0]
         },
-        'availability': [],
-        'capacity': []
+        'availability': [100, 100],
+        'capacity': [100, 100]
     }
 
     myquery = {"projectID": projectID}
@@ -163,10 +197,6 @@ def createProject(data):
     if x is None:
         # Insert the new project
         projects.insert_one(new_project)
-        projects.update_one(
-            {"projectID": projectID},
-            {"$push": {"members": ownerID}}
-        )
 
         # Update the user's owned_projects
         users.update_one(
@@ -185,7 +215,7 @@ def createProject(data):
         return jsonify({'validProjectID': False}), 401
     
 def joinProject(data):
-    usernameID = current_user.id.get('usernameID')
+    usernameID = current_user.id
     projectID = data.get('projectID')
     password = data.get('password')
 
@@ -201,7 +231,7 @@ def joinProject(data):
                 {"projectID": projectID},
                 {
                     "$push": {"members": usernameID},
-                    "$set": {f"checkOut.{usernameID}": []}
+                    "$set": {f"checkOut.{usernameID}": [0, 0]}
                 }
             )
 
@@ -247,6 +277,15 @@ def hardware_checkout(project, hwset, amount):
     if project['availability'][hwset] >= amount:
         project['availability'][hwset] -= amount
         project['checkOut'][current_user.id][hwset] += amount
+
+        # Update the project document in the projects collection
+        projects.update_one(
+            {"projectID": project['projectID']},
+            {"$set": {
+            "availability": project["availability"],
+            f"checkOut.{current_user.id}": project["checkOut"][current_user.id]
+            }}
+        )
         return False, 'Hardware successfully checked out'
     
     else:
@@ -257,6 +296,15 @@ def hardware_checkin(project, hwset, amount):
     if project['checkOut'][current_user.id][hwset] >= amount:
         project['availability'][hwset] += amount
         project['checkOut'][current_user.id][hwset] -= amount   
+
+        # Update the project document in the projects collection
+        projects.update_one(
+            {"projectID": project['projectID']},
+            {"$set": {
+            "availability": project["availability"],
+            f"checkOut.{current_user.id}": project["checkOut"][current_user.id]
+            }}
+        )
         return False, 'Hardware successfully checked in'
     
     else:
