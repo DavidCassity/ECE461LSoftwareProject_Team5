@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Button } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 import ProjectCard from '../components/ProjectCard';
 import ProjectCreationPopup from '../components/ProjectCreationPopup';
 import ProjectJoinPopup from '../components/ProjectJoinPopup';
+import '../components/Banner.css';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -70,13 +71,18 @@ const Projects = () => {
             userID={userID}
             />
       ))}
-      <Button variant="contained" onClick={handleAddProject} style={{ position: 'center', marginTop: '20px' }}>
-        Add Project
-      </Button>
-      <Button variant="contained" onClick={handleJoinProject} style={{ position: 'center', marginTop: '20px'}}>
-        Join Project
-      </Button>
-
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Button fullWidth variant="contained" onClick={handleAddProject} className="add-project-button">
+            Add Project
+          </Button>
+        </Grid>
+        <Grid item xs={6}>
+          <Button fullWidth variant="contained" onClick={handleJoinProject} className="join-project-button">
+            Join Project
+          </Button>
+        </Grid>
+      </Grid>
       {showCreationPopup && <ProjectCreationPopup usernameID={userID} onClose={handleSuccess} />}
       {showJoinPopup && <ProjectJoinPopup onClose={handleSuccess} />}
     </div> 

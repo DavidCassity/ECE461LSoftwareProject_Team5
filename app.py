@@ -111,9 +111,9 @@ def logout():
 
 @app.route('/projects', methods=['GET'])
 def view_projects():
-    user = str(current_user.id)
-    print('Current User: ', user)
     if current_user.is_authenticated:
+        user = str(current_user.id)
+        print('Current User: ', user)
         user_cur = users.find_one({'usernameID': user})
         print(user_cur)
 
@@ -127,8 +127,9 @@ def view_projects():
                 projectList.append(project_data)
 
         return jsonify({'authenticated': True, 'userID': user, 'projects': projectList}), 200
-    #otherwise, return to login page
-    return jsonify({'authenticated': False}), 401
+    else:
+        # Handle the case when the user is not authenticated
+        return jsonify({'authenticated': False, 'error': 'User is not authenticated'}), 401
 
 
 @app.route('/projects', methods=["POST"])
