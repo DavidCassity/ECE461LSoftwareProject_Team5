@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
 //import UserList from './UserList';
 import Counter from './Counter';
 
-const ProjectCard = ({ projectID: propProjectID, ownerID: propOwnerID, members: propMembers, checkOut: propCheckOut, availability: propAvailability, capacity: propCapacity, userID: propUserID }) => {
-  const [projectID, setProjectID] = useState(propProjectID);
-  const [ownerID, setOwnerID] = useState(propOwnerID);
-  const [members, setMembers] = useState(propMembers);
-  const [checkOut, setCheckOut] = useState(propCheckOut);
-  const [availability, setAvailability] = useState(propAvailability);
-  const [capacity, setCapacity] = useState(propCapacity);
-  const [userID, setUserID] = useState(propUserID);
+const ProjectCard = ({ projectID, ownerID, members, checkOut, availability, capacity, userID, updateAvailability }) => {
 
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [value1, setValue1] = useState('');
   const [value2, setValue2] = useState('');
+
+  useEffect(() => {
+    console.log("Project ID:", projectID);
+    console.log("Owner ID:", ownerID);
+    console.log("Members:", members);
+    console.log("Check Out:", checkOut);
+    console.log("Availability:", availability);
+    console.log("Capacity:", capacity);
+    console.log("User ID:", userID);
+  }, [projectID, ownerID, members, checkOut, availability, capacity, userID]);
+
+
+  const handleUpdateAvailability = (index, newAvailability, projectID, userID, newCheckOut) => {
+    updateAvailability(index, newAvailability, projectID, userID, newCheckOut);
+  }
 
   const checkinHardware = async (index, value) => {
     const intValue = parseInt(value, 10);
@@ -38,18 +46,8 @@ const ProjectCard = ({ projectID: propProjectID, ownerID: propOwnerID, members: 
         console.log("No error");
         setMessage(data.message);
         setShowMessage(true);
-        setAvailability(prevAvailability => {
-          const newAvailability = [...prevAvailability]; // Create a copy of the array
-          newAvailability[index] += intValue; // Update the value at the specified index
-          return newAvailability; // Return the updated array
-        });
-        setCheckOut(prevCheckOut => {
-          const newCheckOut = { ...prevCheckOut }; // Create a shallow copy of the checkout object
-          const newArray = [...newCheckOut[userID]]; // Create a copy of the array associated with the user ID
-          newArray[index] -= intValue; // Update the value at the specified index in the array
-          newCheckOut[userID] = newArray; // Update the array associated with the user ID
-          return newCheckOut; // Return the updated checkout object
-        });
+        console.log("Before sending to update availability", index, availability[index] + intValue, projectID, userID, checkOut[userID][index] - intValue);
+        handleUpdateAvailability(index, availability[index] + intValue, projectID, userID, checkOut[userID][index] - intValue);
       }
     }
 
@@ -76,24 +74,14 @@ const ProjectCard = ({ projectID: propProjectID, ownerID: propOwnerID, members: 
           console.log("No error");
           setMessage(data.message);
           setShowMessage(true);
-          setAvailability(prevAvailability => {
-            const newAvailability = [...prevAvailability]; // Create a copy of the array
-            newAvailability[index] -= intValue; // Update the value at the specified index
-            return newAvailability; // Return the updated array
-          });
-          setCheckOut(prevCheckOut => {
-            const newCheckOut = { ...prevCheckOut }; // Create a shallow copy of the checkout object
-            const newArray = [...newCheckOut[userID]]; // Create a copy of the array associated with the user ID
-            newArray[index] += intValue; // Update the value at the specified index in the array
-            newCheckOut[userID] = newArray; // Update the array associated with the user ID
-            return newCheckOut; // Return the updated checkout object
-          });
+          handleUpdateAvailability(index, availability[index] - intValue, projectID, userID, checkOut[userID][index] + intValue);
         }
       }
 
   }
 
   return (
+    
     <Card style={{ marginBottom: '20px', position: 'relative' }}>
       <CardContent>
         <Typography variant="h5" component="div">
