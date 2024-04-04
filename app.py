@@ -30,6 +30,8 @@ with open("login.txt", "r") as file:
 client = MongoClient(uri, server_api=ServerApi('1'))
 users = client.Users.users
 projects = client.Projects.projects
+HWSet1 = client.Hardware.HWSet1
+HWSet2 = client.Hardware.HWSet2
 
 # Bcrypt for password hashing
 bcrypt = Bcrypt(app)
@@ -100,7 +102,6 @@ def login():
         print("User not found")
         return jsonify({'authenticated': False}), 401
 
-    print(usernameID, password)
 
     # Retrieve user from the database
     #user = db.users.find_one({'username': usernameID})
@@ -125,8 +126,13 @@ def view_projects():
                 # Convert ObjectId to string for serialization
                 project_data['_id'] = str(project_data['_id'])
                 projectList.append(project_data)
+        
+        HWSet1_data = HWSet1.find_one({})
+        HWSet2_data = HWSet2.find_one({})
+        availability = [HWSet1_data['availability'], HWSet2_data['availability']]
+        capacity = [HWSet1_data['capacity'], HWSet2_data['capacity']]
 
-        return jsonify({'authenticated': True, 'userID': user, 'projects': projectList}), 200
+        return jsonify({'authenticated': True, 'userID': user, 'projects': projectList, 'availability': availability, 'capacity': capacity}), 200
     else:
         # Handle the case when the user is not authenticated
         return jsonify({'authenticated': False, 'error': 'User is not authenticated'}), 401
@@ -166,8 +172,6 @@ def createProject(data):
         'checkOut': {
             ownerID: [0, 0]
         },
-        'availability': [100, 100],
-        'capacity': [100, 100]
     }
 
     myquery = {"projectID": projectID}
@@ -253,18 +257,39 @@ def updateProject(hwset, amount, checkoutStr):
         
 
 def hardware_checkout(project, hwset, amount):
-    if project['availability'][hwset] >= amount:
-        project['availability'][hwset] -= amount
+    current_hwset = None
+    if hwset == 0:
+        current_hwset = HWSet1.find_one({})
+    else:
+        current_hwset = HWSet2.find_one({}) 
+
+    if current_hwset['availability'] >= amount:
+        current_hwset['availability'] -= amount
         project['checkOut'][current_user.id][hwset] += amount
 
         # Update the project document in the projects collection
         projects.update_one(
             {"projectID": project['projectID']},
             {"$set": {
-            "availability": project["availability"],
             f"checkOut.{current_user.id}": project["checkOut"][current_user.id]
             }}
         )
+
+        # Update the hardware document in the hardware collection
+        if hwset == 0:
+            HWSet1.update_one(
+                {},
+                {"$set": {
+                "availability": current_hwset["availability"]
+                }}
+            )
+        else:
+            HWSet2.update_one(
+                {},
+                {"$set": {
+                "availability": current_hwset["availability"]
+                }}
+            )
         return False, 'Hardware successfully checked out'
     
     else:
@@ -272,18 +297,39 @@ def hardware_checkout(project, hwset, amount):
     
     
 def hardware_checkin(project, hwset, amount):
+    current_hwset = None
+    if hwset == 0:
+        current_hwset = HWSet1.find_one({})
+    else:
+        current_hwset = HWSet2.find_one({}) 
+
     if project['checkOut'][current_user.id][hwset] >= amount:
-        project['availability'][hwset] += amount
-        project['checkOut'][current_user.id][hwset] -= amount   
+        current_hwset['availability'] += amount
+        project['checkOut'][current_user.id][hwset] -= amount
 
         # Update the project document in the projects collection
         projects.update_one(
             {"projectID": project['projectID']},
             {"$set": {
-            "availability": project["availability"],
             f"checkOut.{current_user.id}": project["checkOut"][current_user.id]
             }}
         )
+
+        # Update the hardware document in the hardware collection
+        if hwset == 0:
+            HWSet1.update_one(
+                {},
+                {"$set": {
+                "availability": current_hwset["availability"]
+                }}
+            )
+        else:
+            HWSet2.update_one(
+                {},
+                {"$set": {
+                "availability": current_hwset["availability"]
+                }}
+            )
         return False, 'Hardware successfully checked in'
     
     else:

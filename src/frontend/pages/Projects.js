@@ -12,6 +12,8 @@ const Projects = () => {
   const [showJoinPopup, setShowJoinPopup] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [userID, setUserID] = useState(''); // Add this line
+  const [availability, setAvailability] = useState([]); // Add this line
+  const [capacity, setCapacity] = useState([]); // Add this line
   const navigate = useNavigate();
 
 
@@ -29,6 +31,8 @@ const Projects = () => {
       setAuthenticated(data.authenticated);
       setUserID(data.userID);
       setProjects(data.projects);
+      setAvailability(data.availability);
+      setCapacity(data.capacity);
       console.log(data.authenticated);
       if (!data.authenticated) {
         navigate('/login');
@@ -57,6 +61,36 @@ const Projects = () => {
     setShowJoinPopup(false);
   }
 
+  const updateAvailability = (index, newAvailability, projectID, userID, newCheckOut) => {
+    console.log("Updating availability and checkout for projectID: ", projectID, " and userID: ", userID, " with new availability: ", newAvailability, " and new checkout: ", newCheckOut, " at index: ", index, " in the projects array.");
+
+    setProjects(prevProjects => {
+      const updatedProjects = prevProjects.map(project => {
+      if (project.projectID === projectID) {
+        // If the project matches the specified projectID, update its checkout
+        const updatedCheckout = { ...project.checkOut };
+        const userCheckoutArray = [...updatedCheckout[userID]];
+        userCheckoutArray[index] = newCheckOut;
+        updatedCheckout[userID] = userCheckoutArray;
+        return {
+        ...project,
+        checkOut: updatedCheckout
+        };
+      }
+      return project;
+      });
+      return updatedProjects;
+    });
+
+    setAvailability(prevAvailability => {
+      const updatedAvailability = [...prevAvailability];
+      updatedAvailability[index] = newAvailability;
+      return updatedAvailability;
+    });
+
+    
+  };
+
   return (
     <div>
       {/* Iterate over each project in the projects array */}
@@ -66,9 +100,10 @@ const Projects = () => {
             ownerID={project.ownerID} 
             members={project.members}
             checkOut={project.checkOut}
-            availability={project.availability}
-            capacity={project.capacity}
+            availability={availability}
+            capacity={capacity}
             userID={userID}
+            updateAvailability={updateAvailability}
             />
       ))}
       <Grid container spacing={2}>
