@@ -118,13 +118,11 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
   };
 
   return (
-    
-    <Card style={{ marginBottom: '20px', position: 'relative' }}>
+    <Card style={{ marginBottom: '20px', position: 'relative', border: '1.5px solid #eee' }}>
       <CardContent>
         <Typography variant="h5" component="div">
           {projectID}
         </Typography>
- 
         <p>Members: {members.join(', ')}</p>
         <p>Description: {description}</p>
 
@@ -168,11 +166,21 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
           </Button>
         </div>
         {isOwner ? (
-          <Button variant="contained" color="secondary" onClick={deleteProject} style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={deleteProject}
+            style={{ position: 'absolute', top: 0, right: 0, marginTop: '10px', marginRight: '10px' }}
+          >
             Delete
           </Button>
         ) : (
-          <Button variant="contained" color="secondary" onClick={leaveProject} style={{ position: 'absolute', top: 0, right: 0 }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={leaveProject}
+            style={{ position: 'absolute', top: 0, right: 0, marginTop: '10px', marginRight: '10px' }}
+          >
             Leave
           </Button>
         )}
