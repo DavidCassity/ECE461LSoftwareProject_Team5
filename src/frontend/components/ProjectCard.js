@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
+import { Card, CardContent, Typography, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 const ProjectCard = ({ projectID, ownerID, members, description, checkOut, availability, capacity, userID, updateAvailability, updateProjects }) => {
-  const [message, setMessage] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false); // State variable for controlling dialog visibility
+  const [actionConfirmed, setActionConfirmed] = useState(false);const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [value1, setValue1] = useState('');
   const [value2, setValue2] = useState('');
@@ -117,6 +118,38 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
     }
   };
 
+  const handleLeaveProject = () => {
+    setActionConfirmed(true); // Confirm the action
+    setShowConfirmation(true); // Open the confirmation dialog
+  };
+  
+  const handleDeleteProject = () => {
+    setActionConfirmed(true); // Confirm the action
+    setShowConfirmation(true); // Open the confirmation dialog
+  };
+  
+
+  const handleCloseConfirmation = () => {
+    setShowConfirmation(false); // Close the confirmation dialog
+    setActionConfirmed(false); // Reset confirmation status
+  };
+
+  const handleConfirmAction = async () => {
+    console.log("Confirm action triggered");
+    // Perform action (leave/delete project) if confirmed
+    if (actionConfirmed) {
+      console.log("Action confirmed");
+      if (isOwner) {
+        await deleteProject();
+      } else {
+        await leaveProject();
+      }
+    }
+    // Reset confirmation status and close the confirmation dialog
+    setActionConfirmed(false);
+    setShowConfirmation(false);
+  };  
+
   return (
     <Card style={{ marginBottom: '20px', position: 'relative', border: '1.5px solid #eee' }}>
       <CardContent>
@@ -169,7 +202,7 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
           <Button
             variant="contained"
             color="error"
-            onClick={deleteProject}
+            onClick={handleDeleteProject}
             style={{ position: 'absolute', top: 0, right: 0, marginTop: '10px', marginRight: '10px' }}
           >
             Delete
@@ -178,13 +211,24 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
           <Button
             variant="contained"
             color="error"
-            onClick={leaveProject}
+            onClick={handleLeaveProject}
             style={{ position: 'absolute', top: 0, right: 0, marginTop: '10px', marginRight: '10px' }}
           >
             Leave
           </Button>
         )}
       </CardContent>
+
+      <Dialog open={showConfirmation} onClose={handleCloseConfirmation}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to {isOwner ? 'delete' : 'leave'} this project?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleCloseConfirmation}>Cancel</Button>
+          <Button variant="contained" color="error" onClick={handleConfirmAction}>Yes, I'm sure</Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };
