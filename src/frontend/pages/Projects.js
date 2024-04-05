@@ -46,6 +46,10 @@ const Projects = () => {
     fetchProjects();
   }, []);
 
+  const updateProjects = () => {
+    fetchProjects();
+  };
+
   const handleAddProject = () => {
     setShowCreationPopup(true);
   };
@@ -102,6 +106,7 @@ const Projects = () => {
             capacity={capacity}
             userID={userID}
             updateAvailability={updateAvailability}
+            updateProjects={updateProjects}
         />
       ))}
       <Grid container spacing={2}>

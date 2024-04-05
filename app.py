@@ -231,6 +231,71 @@ def joinProject(data):
             return jsonify({'authenticated': False, 'error': 'Incorrect password'}), 401
     else:
         return jsonify({'authenticated': False, 'error': 'Project not found'}), 404
+
+@app.route('/leave/<projectID>', methods=['POST'])
+def leave_project(projectID):
+    try:
+        data = request.json
+        userID = data.get('userID')
+        
+        # Retrieve the project
+        project = projects.find_one({'projectID': projectID})
+        if project is None:
+            return jsonify({'error': 'Project not found'}), 404
+        
+        # Remove the user from the project's members list
+        projects.update_one({'projectID': projectID}, {'$pull': {'members': userID}})
+        
+        # Remove the project from the user's joined_projects list
+        users.update_one({'usernameID': userID}, {'$pull': {'joined_projects': projectID}})
+        
+        # Return the hardware to the respective hardware sets
+        for hwset, amount in enumerate(project['checkOut'][userID]):
+            if amount > 0:
+                if hwset == 0:
+                    HWSet1.update_one({}, {"$inc": {"availability": amount}})
+                else:
+                    HWSet2.update_one({}, {"$inc": {"availability": amount}})
+        
+        # Remove the user from the project's checkOut list
+        projects.update_one({'projectID': projectID}, {'$unset': {f'checkOut.{userID}': 1}})
+        
+        return jsonify({'message': 'Successfully left the project'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/projects/<projectID>', methods=['DELETE'])
+def delete_project(projectID):
+    try:
+        project = projects.find_one({'projectID': projectID})
+        if project is None:
+            return jsonify({'error': 'Project not found'}), 404
+
+        # Remove the project from the database
+        result = projects.delete_one({'projectID': projectID})
+
+        if result.deleted_count == 1:
+            # Remove the project from the user's joined_projects list
+            users.update_many({"joined_projects": projectID}, {"$pull": {"joined_projects": projectID}})
+
+            # If the user is the owner of the project, remove it from owned_projects list as well
+            if current_user.id == project['ownerID']:
+                users.update_many({}, {"$pull": {"owned_projects": projectID}})
+
+            # Return the hardware to the respective hardware sets
+            for member in project['members']:
+                for hwset, amount in enumerate(project['checkOut'][member]):
+                    if amount > 0:
+                        if hwset == 0:
+                            HWSet1.update_one({}, {"$inc": {"availability": amount}})
+                        else:
+                            HWSet2.update_one({}, {"$inc": {"availability": amount}})
+
+            return jsonify({'message': 'Successfully deleted the project'}), 200
+        else:
+            return jsonify({'error': 'Project not found or you do not have permission to delete it'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
         
 @app.route('/projects/<int:hwset>/<int:amount>/<string:checkoutStr>', methods=['POST'])
 def updateProject(hwset, amount, checkoutStr):
