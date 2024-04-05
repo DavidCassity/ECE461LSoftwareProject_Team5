@@ -231,6 +231,25 @@ def joinProject(data):
             return jsonify({'authenticated': False, 'error': 'Incorrect password'}), 401
     else:
         return jsonify({'authenticated': False, 'error': 'Project not found'}), 404
+
+@app.route('/leave/<projectID>', methods=['POST'])
+def leave_project(projectID):
+    try:
+        data = request.json
+        userID = data.get('userID')
+        # Remove the user from the project's members list
+        projects.update_one(
+            {'projectID': projectID},
+            {'$pull': {'members': userID}}
+        )
+        # Remove the project from the user's joined_projects list
+        users.update_one(
+            {'usernameID': userID},
+            {'$pull': {'joined_projects': projectID}}
+        )
+        return jsonify({'message': 'Successfully left the project'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
         
 @app.route('/projects/<int:hwset>/<int:amount>/<string:checkoutStr>', methods=['POST'])
 def updateProject(hwset, amount, checkoutStr):
