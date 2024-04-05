@@ -11,9 +11,9 @@ const Projects = () => {
   const [showCreationPopup, setShowCreationPopup] = useState(false);
   const [showJoinPopup, setShowJoinPopup] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
-  const [userID, setUserID] = useState(''); // Add this line
-  const [availability, setAvailability] = useState([]); // Add this line
-  const [capacity, setCapacity] = useState([]); // Add this line
+  const [userID, setUserID] = useState('');
+  const [availability, setAvailability] = useState([]);
+  const [capacity, setCapacity] = useState([]);
   const navigate = useNavigate();
 
 
@@ -95,21 +95,7 @@ const Projects = () => {
 
   return (
     <div>
-      {projects.map(project => (
-        <ProjectCard key={project.projectID} 
-            projectID={project.projectID} 
-            ownerID={project.ownerID} 
-            members={project.members}
-            description={project.description}
-            checkOut={project.checkOut}
-            availability={availability}
-            capacity={capacity}
-            userID={userID}
-            updateAvailability={updateAvailability}
-            updateProjects={updateProjects}
-        />
-      ))}
-      <Grid container spacing={2}>
+      <Grid container spacing={2} style={{marginTop: '10px', marginBottom: '10px'}}>
         <Grid item xs={6}>
           <Button fullWidth variant="contained" onClick={handleAddProject} className="add-project-button">
             Add Project
@@ -120,6 +106,24 @@ const Projects = () => {
             Join Project
           </Button>
         </Grid>
+      </Grid>
+      <Grid container spacing={2}>
+        {projects.map((project, index) => (
+          <Grid item xs={6} key={project.projectID}>
+            <ProjectCard
+              projectID={project.projectID}
+              ownerID={project.ownerID}
+              members={project.members}
+              description={project.description}
+              checkOut={project.checkOut}
+              availability={availability}
+              capacity={capacity}
+              userID={userID}
+              updateAvailability={updateAvailability}
+              updateProjects={updateProjects}
+            />
+          </Grid>
+        ))}
       </Grid>
       {showCreationPopup && <ProjectCreationPopup usernameID={userID} onClose={handleSuccess} />}
       {showJoinPopup && <ProjectJoinPopup onClose={handleSuccess} />}

@@ -41,6 +41,9 @@ const ProjectJoinPopup = ({ onClose }) => {
   return (
     <div className="popup-overlay">
       <div className="popup">
+        <Button onClick={onClose} className="close-button">
+          X
+        </Button>
         <h2>Join Project</h2>
         <form onSubmit={handleSubmit}>
           {errorMessage && <p style={{ color: 'red', marginBottom: '10px' }}>{errorMessage}</p>}
@@ -64,9 +67,6 @@ const ProjectJoinPopup = ({ onClose }) => {
             Join Project
           </Button>
         </form>
-        <Button onClick={onClose} className="close-button">
-          X
-        </Button>
       </div>
     </div>
   );

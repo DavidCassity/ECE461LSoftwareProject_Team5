@@ -7,8 +7,6 @@ nav {
   justify-content: space-between;
   align-items: center;
   background-color: #353c4d;
-  position: sticky;
-  top: 0;
 }
 
 nav .title {
