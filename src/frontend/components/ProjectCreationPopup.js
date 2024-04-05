@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, TextField } from '@mui/material';
-import './Popup.css'; // Import the CSS file
+import './Popup.css';
 
 const ProjectCreationPopup = ({ onClose }) => {
   const [projectID, setProjectID] = useState('');
