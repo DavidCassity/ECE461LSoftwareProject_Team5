@@ -42,10 +42,9 @@ const Projects = () => {
     }
   };
   
-  // Call this function when first visiting the page
   useEffect(() => {
     fetchProjects();
-  }, []); // Pass an empty array to only run once
+  }, []);
 
   const handleAddProject = () => {
     setShowCreationPopup(true);
@@ -67,7 +66,6 @@ const Projects = () => {
     setProjects(prevProjects => {
       const updatedProjects = prevProjects.map(project => {
       if (project.projectID === projectID) {
-        // If the project matches the specified projectID, update its checkout
         const updatedCheckout = { ...project.checkOut };
         const userCheckoutArray = [...updatedCheckout[userID]];
         userCheckoutArray[index] = newCheckOut;
@@ -93,18 +91,18 @@ const Projects = () => {
 
   return (
     <div>
-      {/* Iterate over each project in the projects array */}
       {projects.map(project => (
         <ProjectCard key={project.projectID} 
             projectID={project.projectID} 
             ownerID={project.ownerID} 
             members={project.members}
+            description={project.description}
             checkOut={project.checkOut}
             availability={availability}
             capacity={capacity}
             userID={userID}
             updateAvailability={updateAvailability}
-            />
+        />
       ))}
       <Grid container spacing={2}>
         <Grid item xs={6}>

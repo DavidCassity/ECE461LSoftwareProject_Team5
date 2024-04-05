@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
-//import UserList from './UserList';
-import Counter from './Counter';
 
-const ProjectCard = ({ projectID, ownerID, members, checkOut, availability, capacity, userID, updateAvailability }) => {
+const ProjectCard = ({ projectID, ownerID, members, description, checkOut, availability, capacity, userID, updateAvailability }) => {
 
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
@@ -12,13 +10,14 @@ const ProjectCard = ({ projectID, ownerID, members, checkOut, availability, capa
 
   useEffect(() => {
     console.log("Project ID:", projectID);
+    console.log("Project Description:", description);
     console.log("Owner ID:", ownerID);
     console.log("Members:", members);
     console.log("Check Out:", checkOut);
     console.log("Availability:", availability);
     console.log("Capacity:", capacity);
     console.log("User ID:", userID);
-  }, [projectID, ownerID, members, checkOut, availability, capacity, userID]);
+  }, [projectID, description, ownerID, members, checkOut, availability, capacity, userID]);
 
 
   const handleUpdateAvailability = (index, newAvailability, projectID, userID, newCheckOut) => {
@@ -89,6 +88,7 @@ const ProjectCard = ({ projectID, ownerID, members, checkOut, availability, capa
         </Typography>
  
         <p>Members: {members.join(', ')}</p>
+        <p>Description: {description}</p>
 
         <div>
           <Typography variant="subtitle1" component="div">

@@ -160,12 +160,14 @@ def projectHandler():
 def createProject(data):
     ownerID = current_user.id
     projectID = data.get('projectID')
+    description = data.get('description')
     password = data.get('password')
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     new_project = {
         'projectID': projectID,
+        'description': description,
         'password': hashed_password,
         'ownerID' : ownerID,
         'members': [ownerID],
@@ -335,7 +337,5 @@ def hardware_checkin(project, hwset, amount):
     else:
         return True, 'Attempted to check in more hardware than checked out'
     
-
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False, port=os.environ.get("PORT", 80))
