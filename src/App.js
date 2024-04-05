@@ -10,6 +10,7 @@ import Contact from "./frontend/pages/Contact";
 import Projects from "./frontend/pages/Projects";
 import Login from "./frontend/pages/Login";
 import SignUp from "./frontend/pages/SignUp";
+import Logout from "./frontend/pages/Logout";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/projects" element={<Projects />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </div>
   );
