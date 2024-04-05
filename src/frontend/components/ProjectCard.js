@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Button, TextField } from '@mui/material';
 
 const ProjectCard = ({ projectID, ownerID, members, description, checkOut, availability, capacity, userID, updateAvailability, updateProjects }) => {
-
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [value1, setValue1] = useState('');
   const [value2, setValue2] = useState('');
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     console.log("Project ID:", projectID);
@@ -17,7 +17,8 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
     console.log("Availability:", availability);
     console.log("Capacity:", capacity);
     console.log("User ID:", userID);
-  }, [projectID, description, ownerID, members, checkOut, availability, capacity, userID]);
+    setIsOwner(userID === ownerID);
+  }, [projectID, description, ownerID, members, checkOut, availability, capacity, userID, ownerID]);
 
 
   const handleUpdateAvailability = (index, newAvailability, projectID, userID, newCheckOut) => {
@@ -98,6 +99,24 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
     }
   };
 
+  const deleteProject = async () => {
+    try {
+      const response = await fetch(`/projects/${projectID}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        updateProjects();
+      } else {
+        console.error('Failed to delete the project');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     
     <Card style={{ marginBottom: '20px', position: 'relative' }}>
@@ -148,9 +167,15 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
             Check Out
           </Button>
         </div>
-        <Button variant="contained" color="secondary" onClick={leaveProject} style={{ position: 'absolute', top: 0, right: 0 }}>
-          Leave
-        </Button>
+        {isOwner ? (
+          <Button variant="contained" color="secondary" onClick={deleteProject} style={{ position: 'absolute', top: 0, right: 0 }}>
+            Delete
+          </Button>
+        ) : (
+          <Button variant="contained" color="secondary" onClick={leaveProject} style={{ position: 'absolute', top: 0, right: 0 }}>
+            Leave
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
