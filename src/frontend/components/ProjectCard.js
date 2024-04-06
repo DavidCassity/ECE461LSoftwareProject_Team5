@@ -3,11 +3,14 @@ import { Card, CardContent, Typography, Button, TextField, Dialog, DialogTitle, 
 
 const ProjectCard = ({ projectID, ownerID, members, description, checkOut, availability, capacity, userID, updateAvailability, updateProjects }) => {
   const [showConfirmation, setShowConfirmation] = useState(false); // State variable for controlling dialog visibility
-  const [actionConfirmed, setActionConfirmed] = useState(false);const [message, setMessage] = useState('');
+  const [actionConfirmed, setActionConfirmed] = useState(false);
+  const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [value1, setValue1] = useState('');
   const [value2, setValue2] = useState('');
   const [isOwner, setIsOwner] = useState(false);
+  const [validAmount1, setValidAmount1] = useState(true);
+  const [validAmount2, setValidAmount2] = useState(true);
 
   useEffect(() => {
     console.log("Project ID:", projectID);
@@ -26,12 +29,25 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
     updateAvailability(index, newAvailability, projectID, userID, newCheckOut);
   }
 
-  const checkinHardware = async (index, value) => {
+  const checkinHardware = async (index, value, hwset) => {
     const intValue = parseInt(value, 10);
-    if (isNaN(intValue) || intValue > capacity[index] || intValue < 0) {
+    if (isNaN(intValue) || intValue > capacity[index] || intValue > availability[index] || intValue < 0 || intValue > checkOut[userID][index]) {
+      if (hwset == 1) {
+        setValidAmount1(false);
+      }
+      else if (hwset == 2) {
+        setValidAmount2(false);
+      }
+      console.log("Invalid amount");
       return;
     }
 
+    if (hwset == 1) {
+      setValidAmount1(true);
+    }
+    else if (hwset == 2) {
+      setValidAmount2(true);
+    }
     const response = await fetch(`/projects/${index}/${value}/false`, {
     method: 'POST',
     headers: {
@@ -54,12 +70,25 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
 
   }
 
-  const checkoutHardware = async (index, value) => {
+  const checkoutHardware = async (index, value, hwset) => {
     const intValue = parseInt(value, 10);
-    if (isNaN(intValue) || intValue > capacity[index] || intValue < 0) {
+    if (isNaN(intValue) || intValue > capacity[index] || intValue > availability[index] || intValue < 0) {
+      if (hwset == 1) {
+        setValidAmount1(false);
+      }
+      else if (hwset == 2) {
+        setValidAmount2(false);
+      }
+      console.log("Invalid amount");
       return;
     }
 
+    if (hwset == 1) {
+      setValidAmount1(true);
+    }
+    else if (hwset == 2) {
+      setValidAmount2(true);
+    }
     const response = await fetch(`/projects/${index}/${value}/true`, {
       method: 'POST',
       headers: {
@@ -171,12 +200,16 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
             value={value1}
             onChange={(e) => setValue1(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={() => checkinHardware(0, value1)}>
+          <Button variant="contained" color="primary" onClick={() => checkinHardware(0, value1, 1)}>
             Check In
           </Button>
-          <Button variant="contained" color="secondary" onClick={() => checkoutHardware(0, value1)}>
+          <Button variant="contained" color="secondary" onClick={() => checkoutHardware(0, value1, 1)}>
             Check Out
           </Button>
+          <div>
+            {validAmount1 ? <p style={{ color: 'transparent' }}>Please enter a valid amount</p> : 
+            <p style={{ color: 'red' }}>Please enter a valid amount</p>}
+          </div>
         </div>
 
         <div>
@@ -191,12 +224,16 @@ const ProjectCard = ({ projectID, ownerID, members, description, checkOut, avail
             value={value2}
             onChange={(e) => setValue2(e.target.value)}
           />
-          <Button variant="contained" color="primary" onClick={() => checkinHardware(1, value2)}>
+          <Button variant="contained" color="primary" onClick={() => checkinHardware(1, value2, 2)}>
             Check In
           </Button>
-          <Button variant="contained" color="secondary" onClick={() => checkoutHardware(1, value2)}>
+          <Button variant="contained" color="secondary" onClick={() => checkoutHardware(1, value2, 2)}>
             Check Out
           </Button>
+          <div>
+            {validAmount2 ? <p style={{ color: 'transparent' }}>Please enter a valid amount</p> : 
+            <p style={{ color: 'red' }}>Please enter a valid amount</p>}
+          </div>
         </div>
         {isOwner ? (
           <Button

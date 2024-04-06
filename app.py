@@ -4,7 +4,7 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from flask_bcrypt import Bcrypt
 from flask import jsonify
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, confirm_login, logout_user, current_user
 import os
 
 #User class that inherits UserMixin
@@ -18,7 +18,7 @@ CORS(app)
 
 #Create key and initalize Flask-Login
 app.secret_key = "secretkey"
-app.config['PERMANENT_SESSION_LIFETIME'] = 600 # 3600 for 1 hour, 1800 for 30 minutes, 600 for 10 minutes
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # In seconds, 3600 for 1 hour, 1800 for 30 minutes, 600 for 10 minutes
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -128,6 +128,7 @@ def logout():
 @app.route('/projects', methods=['GET'])
 def view_projects():
     if current_user.is_authenticated:
+        confirm_login()
         user = str(current_user.id)
         print('Current User: ', user)
         user_cur = users.find_one({'usernameID': user})
@@ -173,6 +174,10 @@ def projectHandler():
 
 
 def createProject(data):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'User session is expired'}), 401
+    confirm_login()
     ownerID = current_user.id
     projectID = data.get('projectID')
     description = data.get('description')
@@ -215,6 +220,10 @@ def createProject(data):
         return jsonify({'validProjectID': False}), 401
     
 def joinProject(data):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return jsonify({'authenticated': False, 'error': 'User session is expired'}), 404
+    confirm_login()
     usernameID = current_user.id
     projectID = data.get('projectID')
     password = data.get('password')
@@ -249,6 +258,10 @@ def joinProject(data):
 
 @app.route('/leave/<projectID>', methods=['POST'])
 def leave_project(projectID):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'User session is expired'}), 404
+    confirm_login()
     try:
         data = request.json
         userID = data.get('userID')
@@ -281,6 +294,10 @@ def leave_project(projectID):
     
 @app.route('/projects/<projectID>', methods=['DELETE'])
 def delete_project(projectID):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'User session is expired'}), 404
+    confirm_login()
     try:
         project = projects.find_one({'projectID': projectID})
         if project is None:
@@ -316,6 +333,7 @@ def delete_project(projectID):
 def updateProject(hwset, amount, checkoutStr):
     checkout = checkoutStr.lower() == 'true'
     if current_user.is_authenticated:
+        confirm_login()
         data = request.json
         projectID = data.get('projectID')
         usernameID = current_user.id
@@ -339,6 +357,10 @@ def updateProject(hwset, amount, checkoutStr):
         
 
 def hardware_checkout(project, hwset, amount):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return False, 'User session is expired. Please log in again'
+    confirm_login()
     current_hwset = None
     if hwset == 0:
         current_hwset = HWSet1.find_one({})
@@ -379,6 +401,10 @@ def hardware_checkout(project, hwset, amount):
     
     
 def hardware_checkin(project, hwset, amount):
+    # Check if the user is logged in
+    if not current_user.is_authenticated:
+        return False, 'User session is expired. Please log in again'
+    confirm_login()
     current_hwset = None
     if hwset == 0:
         current_hwset = HWSet1.find_one({})
