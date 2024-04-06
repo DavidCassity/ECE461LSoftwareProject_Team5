@@ -52,6 +52,7 @@ def signup():
     new_user = {
         'usernameID': usernameID,
         'password': hashed_password,
+        'logged_in': False,
         'owned_projects' : [],
         'joined_projects': []
     }
@@ -91,7 +92,9 @@ def login():
 
     if x is not None:
         match = bcrypt.check_password_hash(x['password'], password)
-        if match:
+        if match and x['logged_in'] == False:
+            x['logged_in'] = True
+            users.update_one(myquery, {"$set": {"logged_in": True}})
             current_user = User(usernameID)
             login_user(current_user)
             return jsonify({'authenticated': True}), 200
@@ -105,10 +108,22 @@ def login():
 
     # Retrieve user from the database
     #user = db.users.find_one({'username': usernameID})
-@app.route('/logout')
+
+@app.route('/getuser', methods=["GET"])
+def get_user():
+    if current_user.is_authenticated:
+        return jsonify({'authenticated': True, 'usernameID': current_user.id}), 200
+    else:
+        return jsonify({'authenticated': False}), 401
+    
+@app.route('/logout', methods=["POST"])
 @login_required
 def logout():
+    myquery={"usernameID":current_user.id}
+    users.update_one(myquery, {"$set": {"logged_in": False}})
     logout_user()
+    return jsonify({"success": True, "message": "User successfully logged out."}), 200
+
 
 @app.route('/projects', methods=['GET'])
 def view_projects():

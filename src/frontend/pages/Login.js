@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Logout from './Logout';
 import '../../App.css';
 import './Login.css';
 
@@ -54,9 +55,29 @@ const Login = () => {
     setShowPassword(!showPassword); 
   }; 
 
+  // Call getUser when the component mounts
   useEffect(() => {
-    console.log(authenticated);
-  }, [authenticated]); // Execute the effect whenever 'authenticated' changes
+    getUser();
+  }, []); // The empty array ensures the effect runs only once on mount
+
+  // Function to fetch user data
+  const getUser = async () => {
+    try {
+      const response = await fetch('/getuser', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      if (data.authenticated) {
+        navigate('/logout');
+      }
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  };
 
 
   return (
