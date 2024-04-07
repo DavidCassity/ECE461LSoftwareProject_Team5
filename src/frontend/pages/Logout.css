@@ -1,0 +1,16 @@
+
+button {
+    background-color: lightgreen; /* Change the background color to green */
+    color: white; /* Text color */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Add rounded corners */
+    padding: 10px 10px; /* Increase padding for size */
+    font-size: 16px; /* Increase font size */
+    cursor: pointer; /* Add pointer cursor on hover */
+    margin-top: 10px; /* Add margin to the top */
+}
+
+/* Button hover state */
+button:hover {
+    background-color: green;
+}

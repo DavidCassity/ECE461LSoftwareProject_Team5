@@ -1,5 +1,6 @@
 import {React} from 'react';
 import { useNavigate } from 'react-router-dom';
+import './Logout.css';
 
 const Logout = () => {
     const navigate = useNavigate();
@@ -28,9 +29,13 @@ const Logout = () => {
     };
 
     return (
-        <div>
-            <button onClick={handleLogout}>Logout</button>
-        </div>
+        <div style={{ textAlign: 'center', paddingTop: '50px' }}>
+            <div className="logout-message">
+            <h2>You are currently logged in.</h2>
+            <p>To access the login or signup page, please log out first.</p>
+            </div>
+        <button onClick={handleLogout}>Log Out</button>
+      </div>
     );
 };
 
