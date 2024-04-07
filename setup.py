@@ -10,5 +10,6 @@ setup(
         'Flask_Cors==4.0.0',
         'Flask_Login==0.6.3',
         'pymongo==4.6.2',
+        'gunicorn==21.2.0',
     ],
 )
