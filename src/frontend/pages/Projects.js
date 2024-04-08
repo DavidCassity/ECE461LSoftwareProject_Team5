@@ -47,6 +47,7 @@ const Projects = () => {
   // }, []);
 
   useEffect(() => {
+    fetchProjects();
     const interval = setInterval(() => {
       fetchProjects();
     }, 5000); // Fetch projects every 5 seconds

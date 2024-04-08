@@ -18,7 +18,7 @@ CORS(app)
 
 #Create key and initalize Flask-Login
 app.secret_key = "secretkey"
-app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # In seconds, 3600 for 1 hour, 1800 for 30 minutes, 600 for 10 minutes
+app.config['PERMANENT_SESSION_LIFETIME'] = 60 # In seconds, 3600 for 1 hour, 1800 for 30 minutes, 600 for 10 minutes
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -52,7 +52,6 @@ def signup():
     new_user = {
         'usernameID': usernameID,
         'password': hashed_password,
-        'logged_in': False,
         'owned_projects' : [],
         'joined_projects': []
     }
@@ -92,9 +91,7 @@ def login():
 
     if x is not None:
         match = bcrypt.check_password_hash(x['password'], password)
-        if match and x['logged_in'] == False:
-            x['logged_in'] = True
-            users.update_one(myquery, {"$set": {"logged_in": True}})
+        if match:
             current_user = User(usernameID)
             login_user(current_user)
             return jsonify({'authenticated': True}), 200
@@ -119,8 +116,6 @@ def get_user():
 @app.route('/logout', methods=["POST"])
 @login_required
 def logout():
-    myquery={"usernameID":current_user.id}
-    users.update_one(myquery, {"$set": {"logged_in": False}})
     logout_user()
     return jsonify({"success": True, "message": "User successfully logged out."}), 200
 
