@@ -47,11 +47,12 @@ const Projects = () => {
   // }, []);
 
   useEffect(() => {
+    fetchProjects(); // Call fetchProjects when the component renders
     const interval = setInterval(() => {
       fetchProjects();
     }, 5000); // Fetch projects every 5 seconds
-      return () => clearInterval(interval); // Clean up the interval when the component unmounts
-    }, []);
+    return () => clearInterval(interval); // Clean up the interval when the component unmounts
+  }, []);
   
 
   const updateProjects = () => {
