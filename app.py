@@ -443,5 +443,11 @@ def hardware_checkin(project, hwset, amount):
     else:
         return True, 'Attempted to check in more hardware than checked out'
     
+# Commented out code
+# @app.route('/favicon.ico')
+# def favicon():
+#     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+    
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=False, port=os.environ.get("PORT", 80))

@@ -1,5 +1,4 @@
 node_modules
 __pycache__
-build
 PyMongo.py
 login.txt
