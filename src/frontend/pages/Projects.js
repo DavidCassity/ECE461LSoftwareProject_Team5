@@ -56,7 +56,7 @@ const Projects = () => {
     };
   
     fetchAndSetProjects();
-  }, []);
+    }, []);
   
 
   const updateProjects = () => {
